@@ -1,0 +1,17 @@
+C:\Users\John\Source\Repos\GraphClustering3\GraphClustering\bin\Release\GraphClustering.exe.config
+C:\Users\John\Source\Repos\GraphClustering3\GraphClustering\bin\Release\GraphClustering.exe
+C:\Users\John\Source\Repos\GraphClustering3\GraphClustering\bin\Release\GraphClustering.pdb
+C:\Users\John\Source\Repos\GraphClustering3\GraphClustering\bin\Release\NetMining.dll
+C:\Users\John\Source\Repos\GraphClustering3\GraphClustering\bin\Release\MathNet.Numerics.dll
+C:\Users\John\Source\Repos\GraphClustering3\GraphClustering\bin\Release\NetMining.pdb
+C:\Users\John\Source\Repos\GraphClustering3\GraphClustering\bin\Release\MathNet.Numerics.xml
+C:\Users\John\Source\Repos\GraphClustering3\GraphClustering\obj\Release\GraphClustering.csprojResolveAssemblyReference.cache
+C:\Users\John\Source\Repos\GraphClustering3\GraphClustering\obj\Release\GraphClustering.DataDisplayForm.resources
+C:\Users\John\Source\Repos\GraphClustering3\GraphClustering\obj\Release\GraphClustering.Form1.resources
+C:\Users\John\Source\Repos\GraphClustering3\GraphClustering\obj\Release\GraphClustering.PCAForm.resources
+C:\Users\John\Source\Repos\GraphClustering3\GraphClustering\obj\Release\GraphClustering.Properties.Resources.resources
+C:\Users\John\Source\Repos\GraphClustering3\GraphClustering\obj\Release\GraphClustering.ScriptHelp.resources
+C:\Users\John\Source\Repos\GraphClustering3\GraphClustering\obj\Release\GraphClustering.SmoothManifoldForm.resources
+C:\Users\John\Source\Repos\GraphClustering3\GraphClustering\obj\Release\GraphClustering.csproj.GenerateResource.Cache
+C:\Users\John\Source\Repos\GraphClustering3\GraphClustering\obj\Release\GraphClustering.exe
+C:\Users\John\Source\Repos\GraphClustering3\GraphClustering\obj\Release\GraphClustering.pdb

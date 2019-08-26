@@ -1,0 +1,14 @@
+C:\Users\John\Source\Repos\GraphClustering3\NetMining\bin\Release\NetMining.dll
+C:\Users\John\Source\Repos\GraphClustering3\NetMining\bin\Release\NetMining.pdb
+C:\Users\John\Source\Repos\GraphClustering3\NetMining\bin\Release\MathNet.Numerics.dll
+C:\Users\John\Source\Repos\GraphClustering3\NetMining\bin\Release\MathNet.Numerics.xml
+C:\Users\John\Source\Repos\GraphClustering3\NetMining\obj\Release\NetMining.csprojResolveAssemblyReference.cache
+C:\Users\John\Source\Repos\GraphClustering3\NetMining\obj\Release\NetMining.dll
+C:\Users\John\Source\Repos\GraphClustering3\NetMining\obj\Release\NetMining.pdb
+C:\Users\John\Dropbox\GraphClustering3\NetMining\bin\Release\NetMining.dll
+C:\Users\John\Dropbox\GraphClustering3\NetMining\bin\Release\NetMining.pdb
+C:\Users\John\Dropbox\GraphClustering3\NetMining\bin\Release\MathNet.Numerics.dll
+C:\Users\John\Dropbox\GraphClustering3\NetMining\bin\Release\MathNet.Numerics.xml
+C:\Users\John\Dropbox\GraphClustering3\NetMining\obj\Release\NetMining.csprojResolveAssemblyReference.cache
+C:\Users\John\Dropbox\GraphClustering3\NetMining\obj\Release\NetMining.dll
+C:\Users\John\Dropbox\GraphClustering3\NetMining\obj\Release\NetMining.pdb
