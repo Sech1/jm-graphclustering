@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,6 +18,132 @@ namespace debugNetData
 {
   class Program
   {
+
+    static void Main(string[] args)
+    {
+      if (args.Length == 0)
+      {
+        System.Console.WriteLine("Usage: Program.cs <HealthyPath> <InfectedPath> <HealthyFile> <InfectedFile> ");
+        return 1;
+      }
+
+      // AUTOMATING IBD 
+      // We need both a healthy network and an IBD network
+      // COMMAND LINE: clusteringanalysis.exe healthyNet infectedNet VATorINTorTEN  
+
+
+      //convert from gml to graph
+      //string path = "C:\\Users\\John\\Dropbox\\Tayo\\Yasser\\graphs_John_Tayo\\CoNet\\A-TEST\\";
+      string healthyPath = args[2];
+      //"C:\\Users\\jmatta\\Dropbox\\Tayo\\Yasser\\graphs_John_Tayo\\CoNet\\A-TEST\\healthy_CoNet_25";
+      String infectedPath = args[3];
+      //"C:\\Users\\jmatta\\Dropbox\\Tayo\\Yasser\\graphs_John_Tayo\\CoNet\\A-TEST\\IBD_CoNet_25";
+      
+      LightWeightGraph healthy = LightWeightGraph.GetGraphFromGML(args[0]);//healthyFile + ".gml");
+      healthy.SaveGraph(healthyPath + ".graph");
+      LightWeightGraph infected = LightWeightGraph.GetGraphFromGML(args[1]);//infectedFile + ".gml");
+      infected.SaveGraph(infectedPath + ".graph");
+
+      // Makes a list of what the nodes reference
+      using (StreamWriter sw = new StreamWriter(healthyPath + ".txt", true))
+      {
+        for (int i = 0; i < healthy.Nodes.Length; i++)
+        {
+          sw.WriteLine(healthy.Nodes[i].sharedName);
+        }
+      }
+      using (StreamWriter sw = new StreamWriter(infectedPath + ".txt", true))
+      {
+        for (int i = 0; i < infected.Nodes.Length; i++)
+        {
+          sw.WriteLine(infected.Nodes[i].sharedName);
+        }
+      }
+
+      //we don't actually know the number of clusters in each graph - we want to cluster for 1 more than we start with
+      //so cluster for 1 just to get the file.
+      //HVATClust clust1 = new HVATClust(lwg2, K, useweights, 1, 0, reassign, hillclimb);
+      HVATClust healthyClust1 = new HVATClust(healthy, 1, false, 1, 0, false, false);
+      Partition t1 = healthyClust1.GetPartition();
+      int healthyClusters = t1.Clusters.Count;
+      HVATClust infectedClust1 = new HVATClust(infected, 1, false, 1, 0, false, false);
+      Partition t2 = healthyClust1.GetPartition();
+      int infectedClusters = t2.Clusters.Count;
+
+      // Now we know the intital number of clusters, do the actual clustering
+      //HVATClust clust1 = new HVATClust(lwg2, K, useweights, 1, 0, reassign, hillclimb);
+      HVATClust hclust1 = new HVATClust(healthy, healthyClusters + 1, false, 1, 0, false, false);
+      Partition p1 = hclust1.GetPartition();
+      p1.SavePartition(healthyPath + "_VAT.cluster", healthyPath + ".graph");
+
+      HIntegrityClust hclust2 = new HIntegrityClust(healthy, healthyClusters + 1, false, 1, 0, false, false);
+      Partition p2 = hclust2.GetPartition();
+      p2.SavePartition(healthyPath + "_INT.cluster", healthyPath + ".graph");
+
+      HTenacityClust hclust3 = new HTenacityClust(healthy, healthyClusters + 1, false, 1, 0, false, false);
+      Partition p3 = hclust3.GetPartition();
+      p3.SavePartition(healthyPath + "_TEN.cluster", healthyPath + ".graph");
+
+      HVATClust iclust1 = new HVATClust(infected, infectedClusters + 1, false, 1, 0, false, false);
+      Partition p4 = iclust1.GetPartition();
+      p4.SavePartition(infectedPath + "_VAT.cluster", infectedPath + ".graph");
+
+      HIntegrityClust iclust2 = new HIntegrityClust(infected, infectedClusters + 1, false, 1, 0, false, false);
+      Partition p5 = iclust2.GetPartition();
+      p5.SavePartition(infectedPath + "_INT.cluster", infectedPath + ".graph");
+
+      HTenacityClust iclust3 = new HTenacityClust(infected, infectedClusters + 1, false, 1, 0, false, false);
+      Partition p6 = iclust3.GetPartition();
+      p6.SavePartition(infectedPath + "_TEN.cluster", infectedPath + ".graph");
+
+      // THE CLUSTERING IS DONE... PUT THE CLUSTERS INTO A MORE USEFUL FORMAT
+
+      int[] clusts1 = new int[p1.DataCount];
+      int[] clusts2 = new int[p2.DataCount];
+      int[] clusts3 = new int[p3.DataCount];
+      int[] clusts4 = new int[p4.DataCount];
+      int[] clusts5 = new int[p5.DataCount];
+      int[] clusts6 = new int[p6.DataCount];
+
+      //healthy files
+      rename(p1, clusts1, healthy, "_VAT.csv");
+      rename(p2, clusts2, healthy, "_INT.csv");
+      rename(p3, clusts3, healthy, "_TEN.csv");
+      //infected files
+      rename(p4, clusts4, infected, "_VAT.csv");
+      rename(p5, clusts5, infected, "_INT.csv");
+      rename(p6, clusts6, infected, "_TEN.csv");
+
+    }// brace closes main()
+    public void rename(Partition p, int cluster, String FileName, String FileEnd)
+    {
+      for (int i = 0; i < p.DataCount; i++)
+      {
+        cluster[i] = -1;
+      }
+      for (int i = 0; i < p.Clusters.Count(); i++)
+      {
+        for (int j = 0; j < p.Clusters.Points.Count(); j++)
+        {
+          cluster[p.Clusters[i].Points[j].Id] = p.Clusters[i].Points[j].ClusterId;
+        }
+      }
+      using (StreamWriter sw = new StreamWriter(FileName + FileEnd, true))
+      {
+        for (int i = 0; i < p.DataCount; i++)
+        {
+          if (cluster[i] != -1)
+          {
+            sw.WriteLine(cluster[i]);
+          }
+          else
+          {
+            sw.WriteLine("N/A");
+          }
+        }
+      }
+    }
+
     public static Partition combineClusters(Partition partition, int minK)
     {
       // we want to do (partition.Clusters.count - minK) merges
@@ -232,125 +359,8 @@ namespace debugNetData
 
       return partition;
     }
-    static void Main(string[] args)
-    {
-
-
-      // AUTOMATING IBD 
-      // We need both a healthy network and an IBD network
-      // COMMAND LINE: clusteringanalysis.exe healthyNet infectedNet VATorINTorTEN  
-
-
-      //convert from gml to graph
-      //string path = "C:\\Users\\John\\Dropbox\\Tayo\\Yasser\\graphs_John_Tayo\\CoNet\\A-TEST\\";
-      string healthyFile = "C:\\Users\\jmatta\\Dropbox\\Tayo\\Yasser\\graphs_John_Tayo\\CoNet\\A-TEST\\healthy_CoNet_25";
-      string infectedFile = "C:\\Users\\jmatta\\Dropbox\\Tayo\\Yasser\\graphs_John_Tayo\\CoNet\\A-TEST\\IBD_CoNet_25";
-      LightWeightGraph healthy = LightWeightGraph.GetGraphFromGML(healthyFile + ".gml");
-      healthy.SaveGraph(healthyFile + ".graph");
-      LightWeightGraph infected = LightWeightGraph.GetGraphFromGML(infectedFile + ".gml");
-      infected.SaveGraph(infectedFile + ".graph");
-
-      // Makes a list of what the nodes reference
-      using (StreamWriter sw = new StreamWriter(healthyFile + ".txt", true))
-      {
-        for (int i = 0; i < healthy.Nodes.Length; i++)
-        {
-          sw.WriteLine(healthy.Nodes[i].sharedName);
-        }
-      }
-      using (StreamWriter sw = new StreamWriter(infectedFile + ".txt", true))
-      {
-        for (int i = 0; i < infected.Nodes.Length; i++)
-        {
-          sw.WriteLine(infected.Nodes[i].sharedName);
-        }
-      }
-
-      //we don't actually know the number of clusters in each graph - we want to cluster for 1 more than we start with
-      //so cluster for 1 just to get the file.
-      //HVATClust clust1 = new HVATClust(lwg2, K, useweights, 1, 0, reassign, hillclimb);
-      HVATClust healthyClust1 = new HVATClust(healthy, 1, false, 1, 0, false, false);
-      Partition t1 = healthyClust1.GetPartition();
-      int healthyClusters = t1.Clusters.Count;
-      HVATClust infectedClust1 = new HVATClust(infected, 1, false, 1, 0, false, false);
-      Partition t2 = healthyClust1.GetPartition();
-      int infectedClusters = t2.Clusters.Count;
-
-      // Now we know the intital number of clusters, do the actual clustering
-      //HVATClust clust1 = new HVATClust(lwg2, K, useweights, 1, 0, reassign, hillclimb);
-      HVATClust hclust1 = new HVATClust(healthy, healthyClusters + 1, false, 1, 0, false, false);
-      Partition p1 = hclust1.GetPartition();
-      p1.SavePartition(healthyFile + "_VAT.cluster", healthyFile + ".graph");
-
-      HIntegrityClust hclust2 = new HIntegrityClust(healthy, healthyClusters + 1, false, 1, 0, false, false);
-      Partition p2 = hclust2.GetPartition();
-      p2.SavePartition(healthyFile + "_INT.cluster", healthyFile + ".graph");
-
-      HTenacityClust hclust3 = new HTenacityClust(healthy, healthyClusters + 1, false, 1, 0, false, false);
-      Partition p3 = hclust3.GetPartition();
-      p3.SavePartition(healthyFile + "_TEN.cluster", healthyFile + ".graph");
-
-      HVATClust iclust1 = new HVATClust(infected, infectedClusters + 1, false, 1, 0, false, false);
-      Partition p4 = iclust1.GetPartition();
-      p4.SavePartition(infectedFile + "_VAT.cluster", infectedFile + ".graph");
-
-      HIntegrityClust iclust2 = new HIntegrityClust(infected, infectedClusters + 1, false, 1, 0, false, false);
-      Partition p5 = iclust2.GetPartition();
-      p5.SavePartition(infectedFile + "_INT.cluster", infectedFile + ".graph");
-
-      HTenacityClust iclust3 = new HTenacityClust(infected, infectedClusters + 1, false, 1, 0, false, false);
-      Partition p6 = iclust3.GetPartition();
-      p6.SavePartition(infectedFile + "_TEN.cluster", infectedFile + ".graph");
-
-      // THE CLUSTERING IS DONE... PUT THE CLUSTERS INTO A MORE USEFUL FORMAT
-
-      int[] clusts1 = new int[p1.DataCount];
-      int[] clusts2 = new int[p2.DataCount];
-      int[] clusts3 = new int[p3.DataCount];
-      int[] clusts4 = new int[p4.DataCount];
-      int[] clusts5 = new int[p5.DataCount];
-      int[] clusts6 = new int[p6.DataCount];
-
-    //healthy files
-    rename(p1,clusts1,healthyFile,"_VAT.csv");
-    rename(p2,clusts2,healthyFile,"_INT.csv");
-    rename(p3,clusts3,healthyFile,"_TEN.csv");
-    //infected files
-    rename(p4,clusts4,infectedFile,"_VAT.csv");
-    rename(p5,clusts5,infectedFile,"_INT.csv");
-    rename(p6,clusts6,infectedFile,"_TEN.csv");
-
-    }// brace closes main()
-  public void rename(Partition p, int cluster, String FileName, String FileEnd)
-      {
-        for (int i = 0; i < p.DataCount; i++)
-        {
-          cluster[i] = -1;
-        }
-        for (int i = 0; i < p.Clusters.Count(); i++)
-        {
-          for (int j = 0; j < p.Clusters.Points.Count(); j++)
-          {
-            cluster[p.Clusters[i].Points[j].Id] = p.Clusters[i].Points[j].ClusterId;
-          }
-        }
-        using (StreamWriter sw = new StreamWriter(FileName + FileEnd, true))
-        {
-          for (int i = 0; i < p.DataCount; i++)
-          {
-            if (cluster[i] != -1)
-            {
-              sw.WriteLine(cluster[i]);
-            }
-            else
-            {
-              sw.WriteLine("N/A");
-            }
-          }
-        }
-      }
   }
-  
+
 }
 
 
