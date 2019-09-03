@@ -43,10 +43,6 @@ namespace debugNetData
             healthy.SaveGraph(healthyPath + ".graph");
             LightWeightGraph infected = LightWeightGraph.GetGraphFromGML($"{infectedPath}");//infectedFile + ".gml");
             infected.SaveGraph(infectedPath + ".graph");
-            String burke = "Burke";
-            String sucks = "Sucks";
-            String burkeSucka = $"{burke} {sucks}";
-            Console.Write(burkeSucka);
             // Makes a list of what the nodes reference
             using (StreamWriter sw = new StreamWriter(healthyPath + ".txt", true))
             {
