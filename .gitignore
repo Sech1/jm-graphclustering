@@ -4,3 +4,12 @@ obj/
 /.vscode/
 .idea/
 /.idea/
+*.gml
+graphclustering/bin/
+/graphclustering/bin/
+NetMining/bin/Debug/
+/NetMining/bin/Debug/
+debugNetData/bin/Debug/Data/
+/debugNetData/bin/Debug/Data/
+bin/
+obj/
