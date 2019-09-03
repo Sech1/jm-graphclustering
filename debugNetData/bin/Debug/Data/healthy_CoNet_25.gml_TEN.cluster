@@ -1,0 +1,53 @@
+Graph /Users/jaredmschooley/Projects/jm-graphclustering/debugNetData/bin/Debug//Data//healthy_CoNet_25.gml.graph
+Clusters 22
+2
+0 10 
+2
+1 4 
+2
+2 7 
+3
+6 51 53 
+2
+14 71 
+2
+16 21 
+1
+17 
+2
+22 76 
+1
+24 
+1
+26 
+1
+32 
+1
+36 
+1
+40 
+1
+47 
+1
+48 
+2
+55 86 
+2
+58 72 
+1
+60 
+1
+67 
+1
+78 
+1
+82 
+1
+84 
+Meta HTenacityClust
+All calculated Tenacitys:
+2.68181818181818 
+Tenacity: MinTenacity=2.68181818181818
+Removed Count:56 
+85,64,41,28,52,25,83,75,70,23,49,44,87,11,77,66,3,68,29,20,65,50,30,38,34,43,45,39,31,5,62,18,9,73,69,42,33,37,35,63,57,80,46,8,79,81,54,12,19,56,15,27,13,59,61,74
+

@@ -20,6 +20,7 @@ namespace debugNetData
     {
         static void Main(string[] args)
         {
+            String workingDir = Directory.GetCurrentDirectory();
             if (args.Length == 0)
             {
                 System.Console.WriteLine("Usage: Program.cs <HealthyPath> <InfectedPath> <HealthyFile> <InfectedFile> ");
@@ -33,16 +34,19 @@ namespace debugNetData
 
             //convert from gml to graph
             //string path = "C:\\Users\\John\\Dropbox\\Tayo\\Yasser\\graphs_John_Tayo\\CoNet\\A-TEST\\";
-            string healthyPath = args[2];
+            String healthyPath = $"{workingDir}//Data//{args[0]}";
             //"C:\\Users\\jmatta\\Dropbox\\Tayo\\Yasser\\graphs_John_Tayo\\CoNet\\A-TEST\\healthy_CoNet_25";
-            String infectedPath = args[3];
+            String infectedPath = $"{workingDir}//Data//{args[1]}";
             //"C:\\Users\\jmatta\\Dropbox\\Tayo\\Yasser\\graphs_John_Tayo\\CoNet\\A-TEST\\IBD_CoNet_25";
 
-            LightWeightGraph healthy = LightWeightGraph.GetGraphFromGML(args[0]);//healthyFile + ".gml");
+            LightWeightGraph healthy = LightWeightGraph.GetGraphFromGML($"{healthyPath}");//healthyFile + ".gml");
             healthy.SaveGraph(healthyPath + ".graph");
-            LightWeightGraph infected = LightWeightGraph.GetGraphFromGML(args[1]);//infectedFile + ".gml");
+            LightWeightGraph infected = LightWeightGraph.GetGraphFromGML($"{infectedPath}");//infectedFile + ".gml");
             infected.SaveGraph(infectedPath + ".graph");
-
+            String burke = "Burke";
+            String sucks = "Sucks";
+            String burkeSucka = $"{burke} {sucks}";
+            Console.Write(burkeSucka);
             // Makes a list of what the nodes reference
             using (StreamWriter sw = new StreamWriter(healthyPath + ".txt", true))
             {
@@ -114,12 +118,14 @@ namespace debugNetData
             rename(p6, clusts6, infectedPath, "_TEN.csv");
 
         }// brace closes main()
+
         public static void rename(Partition p, int[] cluster, String FileName, String FileEnd)
         {
             for (int i = 0; i < p.DataCount; i++)
             {
                 cluster[i] = -1;
             }
+
             for (int i = 0; i < p.Clusters.Count(); i++)
             {
                 for (int j = 0; j < p.Clusters[i].Points.Count(); j++)
@@ -127,6 +133,7 @@ namespace debugNetData
                     cluster[p.Clusters[i].Points[j].Id] = p.Clusters[i].Points[j].ClusterId;
                 }
             }
+
             using (StreamWriter sw = new StreamWriter(FileName + FileEnd, true))
             {
                 for (int i = 0; i < p.DataCount; i++)
