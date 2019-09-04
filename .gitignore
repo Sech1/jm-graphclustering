@@ -13,3 +13,5 @@ debugNetData/bin/Debug/Data/
 /debugNetData/bin/Debug/Data/
 bin/
 obj/
+.DS_Store
+*.cache
