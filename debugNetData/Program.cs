@@ -21,9 +21,9 @@ namespace debugNetData
     {
         public enum OutType
         {
-            TEN,
-            VAT,
-            INT
+            Ten,
+            Vat,
+            Int
         }
 
         static void Main(string[] args)
@@ -90,7 +90,7 @@ namespace debugNetData
                 {
                     switch (userOut)
                     {
-                        case OutType.INT:
+                        case OutType.Int:
                             HIntegrityClust hclust2 =
                                 new HIntegrityClust(healthy, healthyClusters + 1, false, 1, 0, false, false);
                             Partition p2 = hclust2.GetPartition();
@@ -108,7 +108,7 @@ namespace debugNetData
                             // Infected Group
                             rename(p5, clusts5, infectedPath, "_INT.csv");
                             break;
-                        case OutType.TEN:
+                        case OutType.Ten:
                             HTenacityClust hclust3 =
                                 new HTenacityClust(healthy, healthyClusters + 1, false, 1, 0, false, false);
                             Partition p3 = hclust3.GetPartition();
@@ -126,7 +126,7 @@ namespace debugNetData
                             // Infected Group
                             rename(p6, clusts6, infectedPath, "_TEN.csv");
                             break;
-                        case OutType.VAT:
+                        case OutType.Vat:
                             HVATClust hclust1 = new HVATClust(healthy, healthyClusters + 1, false, 1, 0, false, false);
                             Partition p1 = hclust1.GetPartition();
                             p1.SavePartition(healthyPath + "_VAT.cluster", healthyPath + ".graph");
