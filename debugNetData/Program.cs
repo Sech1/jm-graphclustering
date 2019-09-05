@@ -88,6 +88,9 @@ namespace debugNetData
             {
                 if (Enum.TryParse<OutType>(args[2], ignoreCase: true, out var userOut))
                 {
+                    // Healthy Group
+                    List<DataOutStruct> healthyGroup;
+                    List<DataOutStruct> infectedGroup;
                     switch (userOut)
                     {
                         case OutType.Int:
@@ -104,9 +107,9 @@ namespace debugNetData
                             int[] clusts2 = new int[p2.DataCount];
                             int[] clusts5 = new int[p5.DataCount];
                             // Healthy Group
-                            rename(p2, clusts2, healthyPath, "_INT.csv", userOut);
+                            healthyGroup = rename(p2, clusts2, healthyPath, "_INT.csv", userOut);
                             // Infected Group
-                            rename(p5, clusts5, infectedPath, "_INT.csv", userOut);
+                            infectedGroup = rename(p5, clusts5, infectedPath, "_INT.csv", userOut);
                             break;
                         case OutType.Ten:
                             HTenacityClust hclust3 =
@@ -121,10 +124,11 @@ namespace debugNetData
 
                             int[] clusts3 = new int[p3.DataCount];
                             int[] clusts6 = new int[p6.DataCount];
+                            
                             // Healthy Group
-                            rename(p3, clusts3, healthyPath, "_TEN.csv", userOut);
+                            healthyGroup = rename(p3, clusts3, healthyPath, "_INT.csv", userOut);
                             // Infected Group
-                            rename(p6, clusts6, infectedPath, "_TEN.csv", userOut);
+                            infectedGroup = rename(p6, clusts6, infectedPath, "_INT.csv", userOut);
                             break;
                         case OutType.Vat:
                             HVATClust hclust1 = new HVATClust(healthy, healthyClusters + 1, false, 1, 0, false, false);
@@ -139,9 +143,9 @@ namespace debugNetData
                             int[] clusts1 = new int[p1.DataCount];
                             int[] clusts4 = new int[p4.DataCount];
                             // Healthy Group
-                            rename(p1, clusts1, healthyPath, "_VAT.csv", userOut);
+                            healthyGroup = rename(p1, clusts1, healthyPath, "_VAT.csv", userOut);
                             // Infected Group
-                            rename(p4, clusts4, infectedPath, "_VAT.csv", userOut);
+                            infectedGroup = rename(p4, clusts4, infectedPath, "_VAT.csv", userOut);
                             break;
                     }
                 }
@@ -156,7 +160,7 @@ namespace debugNetData
             }
         } // brace closes main()
 
-        public static List<DataOutStruct> rename(Partition p, int[] cluster, String FileName, String FileEnd,
+        private static List<DataOutStruct> rename(Partition p, int[] cluster, String FileName, String FileEnd,
             OutType type)
         {
             List<DataOutStruct> dataOut = new List<DataOutStruct>();
