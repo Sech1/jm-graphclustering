@@ -76,7 +76,7 @@ namespace debugNetData
             Partition t1 = healthyClust1.GetPartition();
             int healthyClusters = t1.Clusters.Count;
             HVATClust infectedClust1 = new HVATClust(infected, 1, false, 1, 0, false, false);
-            Partition t2 = healthyClust1.GetPartition();
+            Partition t2 = infectedClust1.GetPartition();
             int infectedClusters = t2.Clusters.Count;
 
             // Now we know the intital number of clusters, do the actual clustering
@@ -104,9 +104,9 @@ namespace debugNetData
                             int[] clusts2 = new int[p2.DataCount];
                             int[] clusts5 = new int[p5.DataCount];
                             // Healthy Group
-                            rename(p2, clusts2, healthyPath, "_INT.csv");
+                            rename(p2, clusts2, healthyPath, "_INT.csv", userOut);
                             // Infected Group
-                            rename(p5, clusts5, infectedPath, "_INT.csv");
+                            rename(p5, clusts5, infectedPath, "_INT.csv", userOut);
                             break;
                         case OutType.Ten:
                             HTenacityClust hclust3 =
@@ -122,9 +122,9 @@ namespace debugNetData
                             int[] clusts3 = new int[p3.DataCount];
                             int[] clusts6 = new int[p6.DataCount];
                             // Healthy Group
-                            rename(p3, clusts3, healthyPath, "_TEN.csv");
+                            rename(p3, clusts3, healthyPath, "_TEN.csv", userOut);
                             // Infected Group
-                            rename(p6, clusts6, infectedPath, "_TEN.csv");
+                            rename(p6, clusts6, infectedPath, "_TEN.csv", userOut);
                             break;
                         case OutType.Vat:
                             HVATClust hclust1 = new HVATClust(healthy, healthyClusters + 1, false, 1, 0, false, false);
@@ -139,9 +139,9 @@ namespace debugNetData
                             int[] clusts1 = new int[p1.DataCount];
                             int[] clusts4 = new int[p4.DataCount];
                             // Healthy Group
-                            rename(p1, clusts1, healthyPath, "_VAT.csv");
+                            rename(p1, clusts1, healthyPath, "_VAT.csv", userOut);
                             // Infected Group
-                            rename(p4, clusts4, infectedPath, "_VAT.csv");
+                            rename(p4, clusts4, infectedPath, "_VAT.csv", userOut);
                             break;
                     }
                 }
@@ -156,8 +156,10 @@ namespace debugNetData
             }
         } // brace closes main()
 
-        public static void rename(Partition p, int[] cluster, String FileName, String FileEnd)
+        public static void rename(Partition p, int[] cluster, String FileName, String FileEnd, OutType type)
         {
+            List<DataOutStruct> dataOut = new List<DataOutStruct>();
+            
             for (int i = 0; i < p.DataCount; i++)
             {
                 cluster[i] = -1;
@@ -175,13 +177,16 @@ namespace debugNetData
             {
                 for (int i = 0; i < p.DataCount; i++)
                 {
+                    DataOutStruct outObj = new DataOutStruct();
+                    outObj.bacteria = p.Graph.Nodes[i].sharedName;
+                    outObj.clusterType = type.ToString();
                     if (cluster[i] != -1)
                     {
-                        sw.WriteLine(cluster[i]);
+                        outObj.groupNum = cluster[i].ToString();
                     }
                     else
                     {
-                        sw.WriteLine("N/A");
+                        outObj.groupNum = "N/A";
                     }
                 }
             }
