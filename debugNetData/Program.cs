@@ -110,8 +110,8 @@ namespace debugNetData
                         // Infected Group
                         infectedGroup = rename( p5 , clusts5 , Infectedfile , "_INT.csv" , userOut );
 
-                        G1( healthyGroup , infectedGroup , Healthyfile );
-
+                        G1( healthyGroup , infectedGroup );
+                        G2( healthyGroup , infectedGroup );
 
                         break;
                         case OutType.Ten:
@@ -129,10 +129,13 @@ namespace debugNetData
                         int[] clusts6 = new int[ p6.DataCount ];
 
                         // Healthy Group
-                        healthyGroup = rename( p3 , clusts3 , Healthyfile , "_INT.csv" , userOut );
+                        healthyGroup = rename( p3 , clusts3 , Healthyfile , "_TEN.csv" , userOut );
                         // Infected Group
-                        infectedGroup = rename( p6 , clusts6 , Infectedfile , "_INT.csv" , userOut );
-                        G1( healthyGroup , infectedGroup , Healthyfile );
+                        infectedGroup = rename( p6 , clusts6 , Infectedfile , "_TEN.csv" , userOut );
+                        List<DataOutStruct> test1 = healthyGroup;
+                        List<DataOutStruct> test2 = infectedGroup;
+                        G1( test1 , test2 );
+                        G2( healthyGroup , infectedGroup );
                         break;
                         case OutType.Vat:
                         HVATClust hclust1 = new HVATClust( healthy , healthyClusters + 1 , false , 1 , 0 , false , false );
@@ -150,7 +153,8 @@ namespace debugNetData
                         healthyGroup = rename( p1 , clusts1 , Healthyfile , "_VAT.csv" , userOut );
                         // Infected Group
                         infectedGroup = rename( p4 , clusts4 , Infectedfile , "_VAT.csv" , userOut );
-                        G1( healthyGroup , infectedGroup , Healthyfile );
+                        G1( healthyGroup , infectedGroup );
+                        G2( healthyGroup , infectedGroup );
                         break;
                     }
                 }
@@ -167,8 +171,7 @@ namespace debugNetData
 
 
 
-        private static List<DataOutStruct> rename ( Partition p , int[] cluster , String FileName , String FileEnd ,
-            OutType type )
+        private static List<DataOutStruct> rename ( Partition p , int[] cluster , String FileName , String FileEnd , OutType type )
         {
             List<DataOutStruct> dataOut = new List<DataOutStruct>();
 
@@ -200,8 +203,19 @@ namespace debugNetData
                 }
 
                 dataOut.Add( outObj );
+
             }
 
+
+            // System.Console.WriteLine( dataOut[i].bacteria );
+            using ( StreamWriter sw = new StreamWriter( FileName + "_data.csv" ) )
+
+                for ( int i = 0; i < dataOut.Count(); i++ )
+                {
+                    {
+                        sw.WriteLine( dataOut[ i ].bacteria + "," + dataOut[ i ].groupNum + "," + dataOut[ i ].clusterType );
+                    }
+                }
             return dataOut;
         }
 
@@ -209,7 +223,7 @@ namespace debugNetData
         /// <summary>
         /// G1 finds all matching gml clusters with "N/A"
         /// </summary>
-        public static void G1 ( List<DataOutStruct> healthy , List<DataOutStruct> infected , String filename )
+        public static void G1 ( List<DataOutStruct> healthy , List<DataOutStruct> infected )
         {
             List<string> IBAC = new List<string>();
             List<DataOutStruct> G1Ret = new List<DataOutStruct>();
@@ -245,10 +259,10 @@ namespace debugNetData
                     }
                 }
             }
-            using ( StreamWriter recycle = new StreamWriter( filename + "G1.csv" ) )
+            using ( StreamWriter recycle = new StreamWriter( "./Data/G1.csv" ) )
             {
                 for ( int i = 0; i < G1Ret.Count(); i++ )
-                    recycle.WriteLine( G1Ret[ i ].bacteria + " " + G1Ret[ i ].groupNum );
+                    recycle.WriteLine( G1Ret[ i ].bacteria + "," + G1Ret[ i ].groupNum );
             }
         }
 
@@ -282,8 +296,48 @@ namespace debugNetData
             return temp;
         }
 
+        /// <summary>
+        /// G2 finds all unique maching clusters
+        /// </summary>
+        public static void G2 ( List<DataOutStruct> healthy , List<DataOutStruct> infected )
+        {
+            healthy = removeDuplicate( healthy );
+            infected = removeDuplicate( infected );
+            List<DataOutStruct> holdme = new List<DataOutStruct>();
+            for ( int i = 0; i < healthy.Count(); i++ )
+            {
+                for ( int j = 0; j < infected.Count(); j++ )
+                {
+                    if ( healthy[ i ].bacteria.Equals( infected[ j ].bacteria ) )
+                    {
+                        if ( healthy[ i ].groupNum.Equals( infected[ j ].groupNum ) )
+                        {
+                            holdme.Add( healthy[ i ] );
+                        }
+                    }
+                }
+            }
+            using ( StreamWriter sw = new StreamWriter( "./Data/G2.csv" ) )
+            {
+                for ( int i = 0; i < holdme.Count(); i++ )
+                {
+                    sw.WriteLine( holdme[ i ].bacteria + "," + holdme[ i ].groupNum );
+                }
+            }
+        }
 
-        public static void G2 ( List<DataOutStruct> healthy , List<DataOutStruct> infected , String filename )
+        public static List<DataOutStruct> removeDuplicate ( List<DataOutStruct> a )
+        {
+            List<DataOutStruct> del = a.GroupBy( x => x.groupNum )
+                                       .Where( x => x.Count() == 1 )
+                                       .Select( x => x.FirstOrDefault() ).ToList();
+            return del;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public static void G3 ( List<DataOutStruct> healthy , List<DataOutStruct> infected )
         {
 
         }
