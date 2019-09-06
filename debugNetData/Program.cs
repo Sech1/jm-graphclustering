@@ -19,10 +19,19 @@ namespace debugNetData
         static void Main ( string[] args )
         {
             String workingDir = Directory.GetCurrentDirectory();
+            String datapath = workingDir + "/Data";
+            String[] filepaths = Directory.GetFiles( datapath );
+            
+            if ( !Directory.Exists( datapath ) )
+            {
+                Directory.CreateDirectory( datapath );
+                Console.WriteLine( "Please move <healthyfile> and/or <infectedfile> to: " + datapath );
+                Environment.Exit( 0 );
+            }
             if ( args.Length == 0 )
             {
                 System.Console.WriteLine(
-                    "Usage: Program.cs <HealthyPath> <InfectedPath> <HealthyFile> <InfectedFile> " );
+                    "Usage: Program.cs <Healthyfile> <Infectedfile> <clusterType> " );
                 Environment.Exit( 0 );
             }
 
@@ -32,18 +41,15 @@ namespace debugNetData
 
 
             //convert from gml to graph
-            //string path = "C:\\Users\\John\\Dropbox\\Tayo\\Yasser\\graphs_John_Tayo\\CoNet\\A-TEST\\";
-            String healthyPath = $"{workingDir}//Data//{args[ 0 ]}";
-            //"C:\\Users\\jmatta\\Dropbox\\Tayo\\Yasser\\graphs_John_Tayo\\CoNet\\A-TEST\\healthy_CoNet_25";
-            String infectedPath = $"{workingDir}//Data//{args[ 1 ]}";
-            //"C:\\Users\\jmatta\\Dropbox\\Tayo\\Yasser\\graphs_John_Tayo\\CoNet\\A-TEST\\IBD_CoNet_25";
+            String Healthyfile = $"{workingDir}//Data//{args[ 0 ]}";
+            String Infectedfile = $"{workingDir}//Data//{args[ 1 ]}";
 
-            LightWeightGraph healthy = LightWeightGraph.GetGraphFromGML( $"{healthyPath}" ); //healthyFile + ".gml");
-            healthy.SaveGraph( healthyPath + ".graph" );
-            LightWeightGraph infected = LightWeightGraph.GetGraphFromGML( $"{infectedPath}" ); //infectedFile + ".gml");
-            infected.SaveGraph( infectedPath + ".graph" );
+            LightWeightGraph healthy = LightWeightGraph.GetGraphFromGML( $"{Healthyfile}" );
+            healthy.SaveGraph( Healthyfile + ".graph" );
+            LightWeightGraph infected = LightWeightGraph.GetGraphFromGML( $"{Infectedfile}" ); 
+            infected.SaveGraph( Infectedfile + ".graph" );
             // Makes a list of what the nodes reference
-            using ( StreamWriter sw = new StreamWriter( healthyPath + ".txt" , true ) )
+            using ( StreamWriter sw = new StreamWriter( Healthyfile + ".txt" , true ) )
             {
                 for ( int i = 0; i < healthy.Nodes.Length; i++ )
                 {
@@ -51,7 +57,7 @@ namespace debugNetData
                 }
             }
 
-            using ( StreamWriter sw = new StreamWriter( infectedPath + ".txt" , true ) )
+            using ( StreamWriter sw = new StreamWriter( Infectedfile + ".txt" , true ) )
             {
                 for ( int i = 0; i < infected.Nodes.Length; i++ )
                 {
@@ -62,6 +68,7 @@ namespace debugNetData
             //we don't actually know the number of clusters in each graph - we want to cluster for 1 more than we start with
             //so cluster for 1 just to get the file.
             //HVATClust clust1 = new HVATClust(lwg2, K, useweights, 1, 0, reassign, hillclimb);
+
             HVATClust healthyClust1 = new HVATClust( healthy , 1 , false , 1 , 0 , false , false );
             Partition t1 = healthyClust1.GetPartition();
             int healthyClusters = t1.Clusters.Count;
@@ -87,61 +94,61 @@ namespace debugNetData
                         HIntegrityClust hclust2 =
                             new HIntegrityClust( healthy , healthyClusters + 1 , false , 1 , 0 , false , false );
                         Partition p2 = hclust2.GetPartition();
-                        p2.SavePartition( healthyPath + "_INT.cluster" , healthyPath + ".graph" );
+                        p2.SavePartition( Healthyfile + "_INT.cluster" , Healthyfile + ".graph" );
 
                         HIntegrityClust iclust2 =
                             new HIntegrityClust( infected , infectedClusters + 1 , false , 1 , 0 , false , false );
                         Partition p5 = iclust2.GetPartition();
-                        p5.SavePartition( infectedPath + "_INT.cluster" , infectedPath + ".graph" );
+                        p5.SavePartition( Infectedfile + "_INT.cluster" , Infectedfile + ".graph" );
 
                         int[] clusts2 = new int[ p2.DataCount ];
                         int[] clusts5 = new int[ p5.DataCount ];
                         // Healthy Group
-                        healthyGroup = rename( p2 , clusts2 , healthyPath , "_INT.csv" , userOut );
+                        healthyGroup = rename( p2 , clusts2 , Healthyfile , "_INT.csv" , userOut );
                         // Infected Group
-                        infectedGroup = rename( p5 , clusts5 , infectedPath , "_INT.csv" , userOut );
+                        infectedGroup = rename( p5 , clusts5 , Infectedfile , "_INT.csv" , userOut );
 
-                        G1( healthyGroup , infectedGroup , healthyPath );
-                        
+                        G1( healthyGroup , infectedGroup , Healthyfile );
+
 
                         break;
                         case OutType.Ten:
                         HTenacityClust hclust3 =
                             new HTenacityClust( healthy , healthyClusters + 1 , false , 1 , 0 , false , false );
                         Partition p3 = hclust3.GetPartition();
-                        p3.SavePartition( healthyPath + "_TEN.cluster" , healthyPath + ".graph" );
+                        p3.SavePartition( Healthyfile + "_TEN.cluster" , Healthyfile + ".graph" );
 
                         HTenacityClust iclust3 =
                             new HTenacityClust( infected , infectedClusters + 1 , false , 1 , 0 , false , false );
                         Partition p6 = iclust3.GetPartition();
-                        p6.SavePartition( infectedPath + "_TEN.cluster" , infectedPath + ".graph" );
+                        p6.SavePartition( Infectedfile + "_TEN.cluster" , Infectedfile + ".graph" );
 
                         int[] clusts3 = new int[ p3.DataCount ];
                         int[] clusts6 = new int[ p6.DataCount ];
 
                         // Healthy Group
-                        healthyGroup = rename( p3 , clusts3 , healthyPath , "_INT.csv" , userOut );
+                        healthyGroup = rename( p3 , clusts3 , Healthyfile , "_INT.csv" , userOut );
                         // Infected Group
-                        infectedGroup = rename( p6 , clusts6 , infectedPath , "_INT.csv" , userOut );
-                        G1( healthyGroup , infectedGroup , healthyPath );
+                        infectedGroup = rename( p6 , clusts6 , Infectedfile , "_INT.csv" , userOut );
+                        G1( healthyGroup , infectedGroup , Healthyfile );
                         break;
                         case OutType.Vat:
                         HVATClust hclust1 = new HVATClust( healthy , healthyClusters + 1 , false , 1 , 0 , false , false );
                         Partition p1 = hclust1.GetPartition();
-                        p1.SavePartition( healthyPath + "_VAT.cluster" , healthyPath + ".graph" );
+                        p1.SavePartition( Healthyfile + "_VAT.cluster" , Healthyfile + ".graph" );
 
                         HVATClust iclust1 =
                             new HVATClust( infected , infectedClusters + 1 , false , 1 , 0 , false , false );
                         Partition p4 = iclust1.GetPartition();
-                        p4.SavePartition( infectedPath + "_VAT.cluster" , infectedPath + ".graph" );
+                        p4.SavePartition( Infectedfile + "_VAT.cluster" , Infectedfile + ".graph" );
 
                         int[] clusts1 = new int[ p1.DataCount ];
                         int[] clusts4 = new int[ p4.DataCount ];
                         // Healthy Group
-                        healthyGroup = rename( p1 , clusts1 , healthyPath , "_VAT.csv" , userOut );
+                        healthyGroup = rename( p1 , clusts1 , Healthyfile , "_VAT.csv" , userOut );
                         // Infected Group
-                        infectedGroup = rename( p4 , clusts4 , infectedPath , "_VAT.csv" , userOut );
-                        G1( healthyGroup , infectedGroup , healthyPath );
+                        infectedGroup = rename( p4 , clusts4 , Infectedfile , "_VAT.csv" , userOut );
+                        G1( healthyGroup , infectedGroup , Healthyfile );
                         break;
                     }
                 }
@@ -154,7 +161,7 @@ namespace debugNetData
             {
                 Console.WriteLine( "Please enter a valid cluster type (INT, VAT, TEN)." );
             }
-        } // brace closes main()
+        }
 
 
 
@@ -219,15 +226,15 @@ namespace debugNetData
             List<DataOutStruct> hea = reuse( healthy , G1Ret );
             List<DataOutStruct> inf = reuse( infected , G1Ret );
             G1Ret.Clear();
-            for(int i = 0; i < hea.Count(); i++ )
+            for ( int i = 0; i < hea.Count(); i++ )
             {
-                for(int j = 0; j < inf.Count(); j++ )
+                for ( int j = 0; j < inf.Count(); j++ )
                 {
                     if ( hea[ i ].bacteria.Equals( inf[ j ].bacteria ) )
                     {
-                        if ( hea[ i ].groupNum.Equals( inf[ j ].groupNum)  && hea[i].groupNum.Equals("N/A"))
+                        if ( hea[ i ].groupNum.Equals( inf[ j ].groupNum ) && hea[ i ].groupNum.Equals( "N/A" ) )
                         {
-                            G1Ret.Add( hea[i] );
+                            G1Ret.Add( hea[ i ] );
                         }
                     }
                 }
@@ -235,7 +242,7 @@ namespace debugNetData
             using ( StreamWriter recycle = new StreamWriter( filename + "G1.csv" ) )
             {
                 for ( int i = 0; i < G1Ret.Count(); i++ )
-                    recycle.WriteLine( G1Ret[i].bacteria + " " + G1Ret[i].groupNum );
+                    recycle.WriteLine( G1Ret[ i ].bacteria + " " + G1Ret[ i ].groupNum );
             }
         }
 
