@@ -232,10 +232,10 @@ namespace debugNetData
                     }
                 }
             }
-            using ( StreamWriter sw = new StreamWriter( filename + "G1.csv" ) )
+            using ( StreamWriter recycle = new StreamWriter( filename + "G1.csv" ) )
             {
                 for ( int i = 0; i < G1Ret.Count(); i++ )
-                    sw.WriteLine( G1Ret[i].bacteria + " " + G1Ret[i].groupNum );
+                    recycle.WriteLine( G1Ret[i].bacteria + " " + G1Ret[i].groupNum );
             }
         }
 
