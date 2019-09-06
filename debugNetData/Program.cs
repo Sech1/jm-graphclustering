@@ -21,7 +21,7 @@ namespace debugNetData
             String workingDir = Directory.GetCurrentDirectory();
             String datapath = workingDir + "/Data";
             String[] filepaths = Directory.GetFiles( datapath );
-            
+
             if ( !Directory.Exists( datapath ) )
             {
                 Directory.CreateDirectory( datapath );
@@ -45,8 +45,10 @@ namespace debugNetData
             String Infectedfile = $"{workingDir}//Data//{args[ 1 ]}";
 
             LightWeightGraph healthy = LightWeightGraph.GetGraphFromGML( $"{Healthyfile}" );
+            LightWeightGraph infected = LightWeightGraph.GetGraphFromGML( $"{Infectedfile}" );
+            Healthyfile = Healthyfile.Split( '.' )[ 0 ];
+            Infectedfile = Infectedfile.Split( '.' )[ 0 ];
             healthy.SaveGraph( Healthyfile + ".graph" );
-            LightWeightGraph infected = LightWeightGraph.GetGraphFromGML( $"{Infectedfile}" ); 
             infected.SaveGraph( Infectedfile + ".graph" );
             // Makes a list of what the nodes reference
             using ( StreamWriter sw = new StreamWriter( Healthyfile + ".txt" , true ) )
@@ -203,6 +205,10 @@ namespace debugNetData
             return dataOut;
         }
 
+
+        /// <summary>
+        /// G1 finds all matching gml clusters with "N/A"
+        /// </summary>
         public static void G1 ( List<DataOutStruct> healthy , List<DataOutStruct> infected , String filename )
         {
             List<string> IBAC = new List<string>();
@@ -276,5 +282,10 @@ namespace debugNetData
             return temp;
         }
 
+
+        public static void G2 ( List<DataOutStruct> healthy , List<DataOutStruct> infected , String filename )
+        {
+
+        }
     }
 }
