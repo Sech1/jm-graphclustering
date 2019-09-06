@@ -11,7 +11,6 @@ namespace NetMining.Graphs
         private readonly bool[] _removedNodes;
         private LightWeightGraph g;
         private List<int> _nodeRemovalOrder;
-        private bool _performedHillClimb = false;
         private int _numNodesRemoved;
 
         private double _minVat = double.MaxValue;//This will hold the best score so far
