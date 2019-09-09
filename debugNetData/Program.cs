@@ -225,7 +225,7 @@ namespace debugNetData
         /// <summary>
         /// G1 finds all matching gml clusters with "N/A"
         /// </summary>
-        public static void G1 ( List<DataOutStruct> healthy , List<DataOutStruct> infected )
+        public static List<DataOutStruct> G1 ( List<DataOutStruct> healthy , List<DataOutStruct> infected )
         {
             List<string> IBAC = new List<string>();
             List<DataOutStruct> G1Ret = new List<DataOutStruct>();
@@ -266,42 +266,14 @@ namespace debugNetData
                 for ( int i = 0; i < G1Ret.Count(); i++ )
                     recycle.WriteLine( G1Ret[ i ].bacteria + "," + G1Ret[ i ].groupNum );
             }
-        }
 
-        public static List<DataOutStruct> reduce ( List<DataOutStruct> dos , List<string> bac )
-        {
-            for ( int i = 0; i < dos.Count(); i++ )
-            {
-                if ( !bac.Contains( dos[ i ].bacteria ) )
-                {
-                    dos.Remove( dos[ i ] );
-                }
-            }
-            return dos;
-        }
-
-        public static List<DataOutStruct> reuse ( List<DataOutStruct> dos , List<DataOutStruct> G1R )
-        {
-            List<DataOutStruct> temp = new List<DataOutStruct>();
-            List<DataOutStruct> tG1R = G1R;
-
-            for ( int i = 0; i < dos.Count(); i++ )
-            {
-                for ( int j = 0; j < tG1R.Count(); j++ )
-                {
-                    if ( dos[ i ].bacteria.Equals( tG1R[ j ].bacteria ) )
-                    {
-                        temp.Add( dos[ i ] );
-                    }
-                }
-            }
-            return temp;
+            return G1Ret;
         }
 
         /// <summary>
         /// G2 finds all unique maching clusters
         /// </summary>
-        public static void G2 ( List<DataOutStruct> healthy , List<DataOutStruct> infected )
+        public static List<DataOutStruct> G2 ( List<DataOutStruct> healthy , List<DataOutStruct> infected )
         {
             healthy = removeDuplicate( healthy );
             infected = removeDuplicate( infected );
@@ -326,20 +298,15 @@ namespace debugNetData
                     sw.WriteLine( rename[ i ].bacteria + "," + rename[ i ].groupNum );
                 }
             }
+
+            return rename;
         }
 
-        public static List<DataOutStruct> removeDuplicate ( List<DataOutStruct> a )
-        {
-            List<DataOutStruct> del = a.GroupBy( x => x.groupNum )
-                                       .Where( x => x.Count() == 1 )
-                                       .Select( x => x.FirstOrDefault() ).ToList();
-            return del;
-        }
 
         /// <summary>
         /// G3 finds all unique singular group numbers that are  
         /// </summary>
-        public static void G3 ( List<DataOutStruct> healthy , List<DataOutStruct> infected )
+        public static List<DataOutStruct> G3 ( List<DataOutStruct> healthy , List<DataOutStruct> infected )
         {
             healthy = removeDuplicate( healthy );
             infected = removeDuplicate( infected );
@@ -364,22 +331,15 @@ namespace debugNetData
                     sw.WriteLine(rename[i].bacteria + " , " + rename[i].groupNum);
                 }
             }
+
+            return rename;
         }
 
-        public static List<DataOutStruct> addlist(List<DataOutStruct> addtolist, List<DataOutStruct> existinglist)
-        {
-            for (int i = 0; i < existinglist.Count(); i++)
-            {
-                addtolist.Add(existinglist[i]);
-            }
-
-            return addtolist;
-        }
 
         /// <summary>
         /// G4 finds all bacteria with group number being "N/A" in one file but not the other 
         /// </summary>
-        public static void G4(List<DataOutStruct> healthy, List<DataOutStruct> infected)
+        public static List<DataOutStruct> G4(List<DataOutStruct> healthy, List<DataOutStruct> infected)
         {
             List<string> IBAC = new List<string>();
             List<DataOutStruct> G1Ret = new List<DataOutStruct>();
@@ -421,6 +381,61 @@ namespace debugNetData
                 for ( int i = 0; i < G1Ret.Count(); i++ )
                     recycle.WriteLine( G1Ret[ i ].bacteria + "," + G1Ret[ i ].groupNum );
             }
+
+            return G1Ret;
         }
+
+        public static void G5(List<DataOutStruct> healthy, List<DataOutStruct> infected, String x, String y, String z)
+        {
+            
+        }
+
+        public static List<DataOutStruct> reduce ( List<DataOutStruct> dos , List<string> bac )
+        {
+            for ( int i = 0; i < dos.Count(); i++ )
+            {
+                if ( !bac.Contains( dos[ i ].bacteria ) )
+                {
+                    dos.Remove( dos[ i ] );
+                }
+            }
+            return dos;
+        }
+
+        public static List<DataOutStruct> reuse ( List<DataOutStruct> dos , List<DataOutStruct> G1R )
+        {
+            List<DataOutStruct> temp = new List<DataOutStruct>();
+            List<DataOutStruct> tG1R = G1R;
+
+            for ( int i = 0; i < dos.Count(); i++ )
+            {
+                for ( int j = 0; j < tG1R.Count(); j++ )
+                {
+                    if ( dos[ i ].bacteria.Equals( tG1R[ j ].bacteria ) )
+                    {
+                        temp.Add( dos[ i ] );
+                    }
+                }
+            }
+            return temp;
+        }
+
+        public static List<DataOutStruct> addlist(List<DataOutStruct> addtolist, List<DataOutStruct> existinglist)
+        {
+            for (int i = 0; i < existinglist.Count(); i++)
+            {
+                addtolist.Add(existinglist[i]);
+            }
+
+            return addtolist;
+        }
+        public static List<DataOutStruct> removeDuplicate ( List<DataOutStruct> a )
+        {
+            List<DataOutStruct> del = a.GroupBy( x => x.groupNum )
+                .Where( x => x.Count() == 1 )
+                .Select( x => x.FirstOrDefault() ).ToList();
+            return del;
+        }
+
     } //-end of class
 }
