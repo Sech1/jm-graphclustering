@@ -111,7 +111,8 @@ namespace debugNetData
                         G1( healthyGroup , infectedGroup );
                         G2( healthyGroup , infectedGroup );
                         G3( healthyGroup , infectedGroup );
-
+                        G4( healthyGroup , infectedGroup );
+                        
                         break;
                         case OutType.Ten:
                         HTenacityClust hclust3 =
@@ -133,6 +134,7 @@ namespace debugNetData
                         G1( healthyGroup , infectedGroup );
                         G2( healthyGroup , infectedGroup );
                         G3( healthyGroup , infectedGroup );
+                        G4( healthyGroup , infectedGroup );
                         
                         break;
                         case OutType.Vat:
@@ -153,6 +155,7 @@ namespace debugNetData
                         G1( healthyGroup , infectedGroup );
                         G2( healthyGroup , infectedGroup );
                         G3( healthyGroup , infectedGroup );
+                        G4( healthyGroup , infectedGroup );
                         
                         break;
                     }
@@ -373,9 +376,51 @@ namespace debugNetData
             return addtolist;
         }
 
+        /// <summary>
+        /// G4 finds all bacteria with group number being "N/A" in one file but not the other 
+        /// </summary>
         public static void G4(List<DataOutStruct> healthy, List<DataOutStruct> infected)
         {
+            List<string> IBAC = new List<string>();
+            List<DataOutStruct> G1Ret = new List<DataOutStruct>();
+            for ( int j = 0; j < infected.Count(); j++ )
+            {
+                IBAC.Add( infected[ j ].bacteria );
+            }
+            healthy = reduce( healthy , IBAC );
+            infected = reduce( infected , IBAC );
+            for ( int i = 0; i < healthy.Count(); i++ )
+            {
+                for ( int j = 0; j < IBAC.Count(); j++ )
+                {
+                    if ( healthy[ i ].bacteria.Equals( IBAC[ j ] ) )
+                    {
+                        G1Ret.Add( healthy[ i ] );
+                    }
+                }
+            }
+            List<DataOutStruct> health = reuse( healthy , G1Ret );
+            List<DataOutStruct> infect = reuse( infected , G1Ret );
+            G1Ret.Clear();
+            for (int i = 0; i < health.Count(); i++)
+            {
+                for (int j = 0; j < infect.Count(); j++)
+                {
+                    if (health[i].bacteria.Equals(infect[j].bacteria))
+                    {
+                        if ((health[i].groupNum.Equals(("N/A")) && infect[i].groupNum.Equals("N/A")))
+                        {
+                            G1Ret.Add(health[i]);
+                        }
+                    }
+                }
+            }
             
+            using ( StreamWriter recycle = new StreamWriter( "./Data/G4.csv" ) )
+            {
+                for ( int i = 0; i < G1Ret.Count(); i++ )
+                    recycle.WriteLine( G1Ret[ i ].bacteria + "," + G1Ret[ i ].groupNum );
+            }
         }
     } //-end of class
 }
