@@ -15,4 +15,4 @@ bin/
 obj/
 .DS_Store
 *.cache
-.vs/*
+.vs/NetData/v15
