@@ -2,7 +2,7 @@ namespace debugNetData
 {
     public enum clusterType
     {
-        
+
     }
     public struct DataOutStruct
     {
