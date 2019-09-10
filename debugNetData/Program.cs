@@ -9,30 +9,24 @@ namespace debugNetData
 {
     class Program
     {
-        public enum OutType
-        {
-            Ten,
-            Vat,
-            Int
-        }
-
-        static void Main ( string[] args )
+        static void Main(string[] args)
         {
             String workingDir = Directory.GetCurrentDirectory();
             String datapath = workingDir + "/Data";
-            String[] filepaths = Directory.GetFiles( datapath );
+            String[] filepaths = Directory.GetFiles(datapath);
 
-            if ( !Directory.Exists( datapath ) )
+            if (!Directory.Exists(datapath))
             {
-                Directory.CreateDirectory( datapath );
-                Console.WriteLine( "Please move <healthyfile> and/or <infectedfile> to: " + datapath );
-                Environment.Exit( 0 );
+                Directory.CreateDirectory(datapath);
+                Console.WriteLine("Please move <healthyfile> and/or <infectedfile> to: " + datapath);
+                Environment.Exit(0);
             }
-            if ( args.Length == 0 )
+
+            if (args.Length == 0)
             {
                 System.Console.WriteLine(
-                    "Usage: Program.cs <Healthyfile> <Infectedfile> <clusterType> " );
-                Environment.Exit( 0 );
+                    "Usage: Program.cs <Healthyfile> <Infectedfile> <clusterType> ");
+                Environment.Exit(0);
             }
 
             // AUTOMATING IBD 
@@ -41,29 +35,29 @@ namespace debugNetData
 
 
             //convert from gml to graph
-            String Healthyfile = $"{workingDir}//Data//{args[ 0 ]}";
-            String Infectedfile = $"{workingDir}//Data//{args[ 1 ]}";
+            String Healthyfile = $"{workingDir}//Data//{args[0]}";
+            String Infectedfile = $"{workingDir}//Data//{args[1]}";
 
-            LightWeightGraph healthy = LightWeightGraph.GetGraphFromGML( $"{Healthyfile}" );
-            LightWeightGraph infected = LightWeightGraph.GetGraphFromGML( $"{Infectedfile}" );
-            Healthyfile = Healthyfile.Split( '.' )[ 0 ];
-            Infectedfile = Infectedfile.Split( '.' )[ 0 ];
-            healthy.SaveGraph( Healthyfile + ".graph" );
-            infected.SaveGraph( Infectedfile + ".graph" );
+            LightWeightGraph healthy = LightWeightGraph.GetGraphFromGML($"{Healthyfile}");
+            LightWeightGraph infected = LightWeightGraph.GetGraphFromGML($"{Infectedfile}");
+            Healthyfile = Healthyfile.Split('.')[0];
+            Infectedfile = Infectedfile.Split('.')[0];
+            healthy.SaveGraph(Healthyfile + ".graph");
+            infected.SaveGraph(Infectedfile + ".graph");
             // Makes a list of what the nodes reference
-            using ( StreamWriter sw = new StreamWriter( Healthyfile + ".txt" , true ) )
+            using (StreamWriter sw = new StreamWriter(Healthyfile + ".txt", true))
             {
-                for ( int i = 0; i < healthy.Nodes.Length; i++ )
+                for (int i = 0; i < healthy.Nodes.Length; i++)
                 {
-                    sw.WriteLine( healthy.Nodes[ i ].sharedName );
+                    sw.WriteLine(healthy.Nodes[i].sharedName);
                 }
             }
 
-            using ( StreamWriter sw = new StreamWriter( Infectedfile + ".txt" , true ) )
+            using (StreamWriter sw = new StreamWriter(Infectedfile + ".txt", true))
             {
-                for ( int i = 0; i < infected.Nodes.Length; i++ )
+                for (int i = 0; i < infected.Nodes.Length; i++)
                 {
-                    sw.WriteLine( infected.Nodes[ i ].sharedName );
+                    sw.WriteLine(infected.Nodes[i].sharedName);
                 }
             }
 
@@ -71,10 +65,10 @@ namespace debugNetData
             //so cluster for 1 just to get the file.
             //HVATClust clust1 = new HVATClust(lwg2, K, useweights, 1, 0, reassign, hillclimb);
 
-            HVATClust healthyClust1 = new HVATClust( healthy , 1 , false , 1 , 0 , false , false );
+            HVATClust healthyClust1 = new HVATClust(healthy, 1, false, 1, 0, false, false);
             Partition t1 = healthyClust1.GetPartition();
             int healthyClusters = t1.Clusters.Count;
-            HVATClust infectedClust1 = new HVATClust( infected , 1 , false , 1 , 0 , false , false );
+            HVATClust infectedClust1 = new HVATClust(infected, 1, false, 1, 0, false, false);
             Partition t2 = infectedClust1.GetPartition();
             int infectedClusters = t2.Clusters.Count;
 
@@ -83,141 +77,191 @@ namespace debugNetData
 
             // This sees if the input cluster type can be parsed as the Enum, and if so 
             // Uses a switch statement to decide which clustering to run.
-            if ( args.Length >= 3 )
+            if (args.Length == 3)
             {
-                if ( Enum.TryParse<OutType>( args[ 2 ] , ignoreCase: true , result: out var userOut ) )
-                {
-                    // Healthy Group
-                    List<DataOutStruct> healthyGroup;
-                    List<DataOutStruct> infectedGroup;
-                    switch ( userOut )
-                    {
-                        case OutType.Int:
-                        HIntegrityClust hclust2 =
-                            new HIntegrityClust( healthy , healthyClusters + 1 , false , 1 , 0 , false , false );
-                        Partition p2 = hclust2.GetPartition();
-                        p2.SavePartition( Healthyfile + "_INT.cluster" , Healthyfile + ".graph" );
-                        HIntegrityClust iclust2 =
-                            new HIntegrityClust( infected , infectedClusters + 1 , false , 1 , 0 , false , false );
-                        Partition p5 = iclust2.GetPartition();
-                        p5.SavePartition( Infectedfile + "_INT.cluster" , Infectedfile + ".graph" );
-                        int[] clusts2 = new int[ p2.DataCount ];
-                        int[] clusts5 = new int[ p5.DataCount ];
-                        // Healthy Group
-                        healthyGroup = rename( p2 , clusts2 , Healthyfile , "_INT.csv" , userOut );
-                        // Infected Group
-                        infectedGroup = rename( p5 , clusts5 , Infectedfile , "_INT.csv" , userOut );
+                List<List<DataOutStruct>> outData = constructLists(args, healthy, infected, Healthyfile, Infectedfile,
+                    healthyClusters, infectedClusters);
+            }
+            else
+            {
+                Console.WriteLine(
+                    "Please enter 3 parameters, in this order:\n " +
+                    "Healthy data path(.gml)\n " +
+                    "Unhealthy data path(.gml)\n " +
+                    "Desired Output Group(listed in Readme)\n");
+            }
+        }
 
-                        G1( healthyGroup , infectedGroup );
-                        G2( healthyGroup , infectedGroup );
-                        G3( healthyGroup , infectedGroup );
-                        G4( healthyGroup , infectedGroup );
-                        
-                        break;
-                        case OutType.Ten:
-                        HTenacityClust hclust3 =
-                            new HTenacityClust( healthy , healthyClusters + 1 , false , 1 , 0 , false , false );
-                        Partition p3 = hclust3.GetPartition();
-                        p3.SavePartition( Healthyfile + "_TEN.cluster" , Healthyfile + ".graph" );
-                        HTenacityClust iclust3 =
-                            new HTenacityClust( infected , infectedClusters + 1 , false , 1 , 0 , false , false );
-                        Partition p6 = iclust3.GetPartition();
-                        p6.SavePartition( Infectedfile + "_TEN.cluster" , Infectedfile + ".graph" );
-                        int[] clusts3 = new int[ p3.DataCount ];
-                        int[] clusts6 = new int[ p6.DataCount ];
-                        // Healthy Group
-                        healthyGroup = rename( p3 , clusts3 , Healthyfile , "_TEN.csv" , userOut );
-                        // Infected Group
-                        infectedGroup = rename( p6 , clusts6 , Infectedfile , "_TEN.csv" , userOut );
-                        
-                        
-                        G1( healthyGroup , infectedGroup );
-                        G2( healthyGroup , infectedGroup );
-                        G3( healthyGroup , infectedGroup );
-                        G4( healthyGroup , infectedGroup );
-                        
-                        break;
-                        case OutType.Vat:
-                        HVATClust hclust1 = new HVATClust( healthy , healthyClusters + 1 , false , 1 , 0 , false , false );
-                        Partition p1 = hclust1.GetPartition();
-                        p1.SavePartition( Healthyfile + "_VAT.cluster" , Healthyfile + ".graph" );
-                        HVATClust iclust1 =
-                            new HVATClust( infected , infectedClusters + 1 , false , 1 , 0 , false , false );
-                        Partition p4 = iclust1.GetPartition();
-                        p4.SavePartition( Infectedfile + "_VAT.cluster" , Infectedfile + ".graph" );
-                        int[] clusts1 = new int[ p1.DataCount ];
-                        int[] clusts4 = new int[ p4.DataCount ];
-                        // Healthy Group
-                        healthyGroup = rename( p1 , clusts1 , Healthyfile , "_VAT.csv" , userOut );
-                        // Infected Group
-                        infectedGroup = rename( p4 , clusts4 , Infectedfile , "_VAT.csv" , userOut );
-                        
-                        G1( healthyGroup , infectedGroup );
-                        G2( healthyGroup , infectedGroup );
-                        G3( healthyGroup , infectedGroup );
-                        G4( healthyGroup , infectedGroup );
-                        
-                        break;
-                    }
-                }
-                else
+        private static List<List<DataOutStruct>> constructLists(string[] args, LightWeightGraph healthy,
+            LightWeightGraph infected, String Healthyfile, String Infectedfile, int healthyClusters,
+            int infectedClusters)
+        {
+            List<List<DataOutStruct>> outList = new List<List<DataOutStruct>>();
+            GeneralCluster cluster = new GeneralCluster();
+            if (Enum.TryParse<ClusterType>(args[2], ignoreCase: true, result: out var userOut))
+            {
+                // Healthy Group
+                List<DataOutStruct> healthyGroup;
+                List<DataOutStruct> infectedGroup;
+
+                switch (userOut)
                 {
-                    Console.WriteLine( "Please input a valid output type (VAT, INT, TEN) as the third parameter." );
+                    case ClusterType.G1I:
+                        cluster = returnClusterAndPartition(OutType.Int, healthy, infected, healthyClusters,
+                            infectedClusters, Healthyfile, Infectedfile);
+                        // Healthy Group
+                        healthyGroup = rename(cluster.Int0.Partition, cluster.HealthyCount, Healthyfile, "_INT.csv",
+                            OutType.Int);
+                        // Infected Group
+                        infectedGroup = rename(cluster.Int1.Partition, cluster.InfectedCount, Infectedfile, "_INT.csv",
+                            OutType.Int);
+
+                        outList.Add(healthyGroup);
+                        outList.Add(infectedGroup);
+                        List<DataOutStruct> g1 = G1(outList);
+                        G2(healthyGroup, infectedGroup);
+                        G3(healthyGroup, infectedGroup);
+                        G4(healthyGroup, infectedGroup);
+
+                        break;
+                    case ClusterType.G1T:
+                        cluster = returnClusterAndPartition(OutType.Ten, healthy, infected, healthyClusters,
+                            infectedClusters, Healthyfile, Infectedfile);
+                        // Healthy Group
+                        healthyGroup = rename(cluster.Ten0.Partition, cluster.HealthyCount, Healthyfile, "_TEN.csv",
+                            OutType.Ten);
+                        // Infected Group
+                        infectedGroup = rename(cluster.Ten1.Partition, cluster.InfectedCount, Infectedfile, "_TEN.csv",
+                            OutType.Ten);
+                        outList.Add(healthyGroup);
+                        outList.Add(infectedGroup);
+
+                        G1(outList);
+                        G2(healthyGroup, infectedGroup);
+                        G3(healthyGroup, infectedGroup);
+                        G4(healthyGroup, infectedGroup);
+
+                        break;
+                    case ClusterType.G1V:
+                        cluster = returnClusterAndPartition(OutType.Vat, healthy, infected, healthyClusters,
+                            infectedClusters, Healthyfile, Infectedfile);
+                        // Healthy Group
+                        healthyGroup = rename(cluster.Vat0.Partition, cluster.HealthyCount, Healthyfile, "_VAT.csv",
+                            OutType.Vat);
+                        // Infected Group
+                        infectedGroup = rename(cluster.Vat1.Partition, cluster.InfectedCount, Infectedfile, "_VAT.csv",
+                            OutType.Vat);
+                        outList.Add(healthyGroup);
+                        outList.Add(infectedGroup);
+
+                        G1(outList);
+                        G2(healthyGroup, infectedGroup);
+                        G3(healthyGroup, infectedGroup);
+                        G4(healthyGroup, infectedGroup);
+
+                        break;
                 }
             }
             else
             {
-                Console.WriteLine( "Please enter a valid cluster type (INT, VAT, TEN)." );
+                Console.WriteLine("Please input a valid output type (VAT, INT, TEN) as the third parameter.");
             }
+
+            return outList;
         }
 
+        private static GeneralCluster returnClusterAndPartition(OutType type, LightWeightGraph healthy,
+            LightWeightGraph infected, int healthyClusters, int infectedClusters, String Healthyfile,
+            String Infectedfile)
+        {
+            GeneralCluster cluster = new GeneralCluster();
+            switch (type)
+            {
+                case OutType.Int:
+                    cluster.Int0.Cluster =
+                        new HIntegrityClust(healthy, healthyClusters + 1, false, 1, 0, false, false);
+                    cluster.Int0.Partition = cluster.Int0.Cluster.GetPartition();
+                    cluster.Int0.Partition.SavePartition(Healthyfile + "_INT.cluster", Healthyfile + ".graph");
+                    cluster.Int1.Cluster =
+                        new HIntegrityClust(infected, infectedClusters + 1, false, 1, 0, false, false);
+                    cluster.Int1.Partition = cluster.Int1.Cluster.GetPartition();
+                    cluster.Int1.Partition.SavePartition(Infectedfile + "_INT.cluster", Infectedfile + ".graph");
+                    cluster.HealthyCount = new int[cluster.Int0.Partition.DataCount];
+                    cluster.InfectedCount = new int[cluster.Int1.Partition.DataCount];
+                    break;
+                case OutType.Ten:
+                    cluster.Ten0.Cluster =
+                        new HTenacityClust(healthy, healthyClusters + 1, false, 1, 0, false, false);
+                    cluster.Ten0.Partition = cluster.Ten0.Cluster.GetPartition();
+                    cluster.Ten0.Partition.SavePartition(Healthyfile + "_TEN.cluster", Healthyfile + ".graph");
+                    cluster.Ten1.Cluster =
+                        new HTenacityClust(infected, infectedClusters + 1, false, 1, 0, false, false);
+                    cluster.Ten1.Partition = cluster.Ten1.Cluster.GetPartition();
+                    cluster.Ten1.Partition.SavePartition(Infectedfile + "_TEN.cluster", Infectedfile + ".graph");
+                    cluster.HealthyCount = new int[cluster.Ten0.Partition.DataCount];
+                    cluster.InfectedCount = new int[cluster.Ten1.Partition.DataCount];
+                    break;
+                case OutType.Vat:
+                    cluster.Vat0.Cluster = new HVATClust(healthy, healthyClusters + 1, false, 1, 0, false, false);
+                    cluster.Vat0.Partition = cluster.Vat0.Cluster.GetPartition();
+                    cluster.Vat0.Partition.SavePartition(Healthyfile + "_VAT.cluster", Healthyfile + ".graph");
+                    cluster.Vat1.Cluster =
+                        new HVATClust(infected, infectedClusters + 1, false, 1, 0, false, false);
+                    cluster.Vat1.Partition = cluster.Vat1.Cluster.GetPartition();
+                    cluster.Vat1.Partition.SavePartition(Infectedfile + "_VAT.cluster", Infectedfile + ".graph");
+                    cluster.HealthyCount = new int[cluster.Vat0.Partition.DataCount];
+                    cluster.InfectedCount = new int[cluster.Vat1.Partition.DataCount];
+                    break;
+            }
 
+            return cluster;
+        }
 
-        private static List<DataOutStruct> rename ( Partition p , int[] cluster , String FileName , String FileEnd , OutType type )
+        private static List<DataOutStruct> rename(Partition p, int[] cluster, String FileName, String FileEnd,
+            OutType type)
         {
             List<DataOutStruct> dataOut = new List<DataOutStruct>();
 
-            for ( int i = 0; i < p.DataCount; i++ )
+            for (int i = 0; i < p.DataCount; i++)
             {
-                cluster[ i ] = -1;
+                cluster[i] = -1;
             }
 
-            for ( int i = 0; i < p.Clusters.Count(); i++ )
+            for (int i = 0; i < p.Clusters.Count(); i++)
             {
-                for ( int j = 0; j < p.Clusters[ i ].Points.Count(); j++ )
+                for (int j = 0; j < p.Clusters[i].Points.Count(); j++)
                 {
-                    cluster[ p.Clusters[ i ].Points[ j ].Id ] = p.Clusters[ i ].Points[ j ].ClusterId;
+                    cluster[p.Clusters[i].Points[j].Id] = p.Clusters[i].Points[j].ClusterId;
                 }
             }
 
-            for ( int i = 0; i < p.DataCount; i++ )
+            for (int i = 0; i < p.DataCount; i++)
             {
                 DataOutStruct outObj = new DataOutStruct();
-                outObj.bacteria = p.Graph.Nodes[ i ].sharedName;
+                outObj.bacteria = p.Graph.Nodes[i].sharedName;
                 outObj.clusterType = type.ToString();
-                if ( cluster[ i ] != -1 )
+                if (cluster[i] != -1)
                 {
-                    outObj.groupNum = cluster[ i ].ToString();
+                    outObj.groupNum = cluster[i].ToString();
                 }
                 else
                 {
                     outObj.groupNum = "N/A";
                 }
 
-                dataOut.Add( outObj );
-
+                dataOut.Add(outObj);
             }
 
-
             // System.Console.WriteLine( dataOut[i].bacteria );
-            using ( StreamWriter sw = new StreamWriter( FileName + "_data.csv" ) )
+            using (StreamWriter sw = new StreamWriter(FileName + "_data.csv"))
 
-                for ( int i = 0; i < dataOut.Count(); i++ )
+                for (int i = 0; i < dataOut.Count(); i++)
                 {
                     {
-                        sw.WriteLine( dataOut[ i ].bacteria + "," + dataOut[ i ].groupNum + "," + dataOut[ i ].clusterType );
+                        sw.WriteLine(dataOut[i].bacteria + "," + dataOut[i].groupNum + "," + dataOut[i].clusterType);
                     }
                 }
+
             return dataOut;
         }
 
@@ -225,77 +269,47 @@ namespace debugNetData
         /// <summary>
         /// G1 finds all matching gml clusters with "N/A"
         /// </summary>
-        public static List<DataOutStruct> G1 ( List<DataOutStruct> healthy , List<DataOutStruct> infected )
+        public static List<DataOutStruct> G1(List<List<DataOutStruct>> data)
         {
-            List<string> IBAC = new List<string>();
-            List<DataOutStruct> G1Ret = new List<DataOutStruct>();
-            for ( int j = 0; j < infected.Count(); j++ )
+            List<List<DataOutStruct>> filteredList = new List<List<DataOutStruct>>();
+            foreach (List<DataOutStruct> dataSet in data)
             {
-                IBAC.Add( infected[ j ].bacteria );
-            }
-            healthy = reduce( healthy , IBAC );
-            infected = reduce( infected , IBAC );
-            for ( int i = 0; i < healthy.Count(); i++ )
-            {
-                for ( int j = 0; j < IBAC.Count(); j++ )
-                {
-                    if ( healthy[ i ].bacteria.Equals( IBAC[ j ] ) )
-                    {
-                        G1Ret.Add( healthy[ i ] );
-                    }
-                }
-            }
-            List<DataOutStruct> hea = reuse( healthy , G1Ret );
-            List<DataOutStruct> inf = reuse( infected , G1Ret );
-            G1Ret.Clear();
-            for ( int i = 0; i < hea.Count(); i++ )
-            {
-                for ( int j = 0; j < inf.Count(); j++ )
-                {
-                    if ( hea[ i ].bacteria.Equals( inf[ j ].bacteria ) )
-                    {
-                        if ( hea[ i ].groupNum.Equals( inf[ j ].groupNum ) && hea[ i ].groupNum.Equals( "N/A" ) )
-                        {
-                            G1Ret.Add( hea[ i ] );
-                        }
-                    }
-                }
-            }
-            using ( StreamWriter recycle = new StreamWriter( "./Data/G1.csv" ) )
-            {
-                for ( int i = 0; i < G1Ret.Count(); i++ )
-                    recycle.WriteLine( G1Ret[ i ].bacteria + "," + G1Ret[ i ].groupNum );
+                List<DataOutStruct> newList = dataSet.Where(x => x.groupNum.Equals("N/A")).ToList();
+                filteredList.Add(newList);
             }
 
-            return G1Ret;
+            List<DataOutStruct> outList = filteredList[0].Union(filteredList[1]).ToList();
+
+            return outList;
         }
 
         /// <summary>
         /// G2 finds all unique maching clusters
         /// </summary>
-        public static List<DataOutStruct> G2 ( List<DataOutStruct> healthy , List<DataOutStruct> infected )
+        public static List<DataOutStruct> G2(List<DataOutStruct> healthy, List<DataOutStruct> infected)
         {
-            healthy = removeDuplicate( healthy );
-            infected = removeDuplicate( infected );
+            healthy = removeDuplicate(healthy);
+            infected = removeDuplicate(infected);
             List<DataOutStruct> rename = new List<DataOutStruct>();
-            for ( int i = 0; i < healthy.Count(); i++ )
+            for (int i = 0; i < healthy.Count(); i++)
             {
-                for ( int j = 0; j < infected.Count(); j++ )
+                for (int j = 0; j < infected.Count(); j++)
                 {
-                    if ( healthy[ i ].bacteria.Equals( infected[ j ].bacteria ) )
+                    if (healthy[i].bacteria.Equals(infected[j].bacteria))
                     {
-                        if ( healthy[ i ].groupNum.Equals( infected[ j ].groupNum ) )
+                        if (healthy[i].groupNum.Equals(infected[j].groupNum))
                         {
-                            rename.Add( healthy[ i ] );
+                            rename.Add(healthy[i]);
                         }
                     }
                 }
             }
-            using ( StreamWriter sw = new StreamWriter( "./Data/G2.csv" ) )
+
+            using (StreamWriter sw = new StreamWriter("./Data/G2.csv"))
             {
-                for ( int i = 0; i < rename.Count(); i++ )
+                for (int i = 0; i < rename.Count(); i++)
                 {
-                    sw.WriteLine( rename[ i ].bacteria + "," + rename[ i ].groupNum );
+                    sw.WriteLine(rename[i].bacteria + "," + rename[i].groupNum);
                 }
             }
 
@@ -306,24 +320,25 @@ namespace debugNetData
         /// <summary>
         /// G3 finds all unique singular group numbers that are  
         /// </summary>
-        public static List<DataOutStruct> G3 ( List<DataOutStruct> healthy , List<DataOutStruct> infected )
+        public static List<DataOutStruct> G3(List<DataOutStruct> healthy, List<DataOutStruct> infected)
         {
-            healthy = removeDuplicate( healthy );
-            infected = removeDuplicate( infected );
+            healthy = removeDuplicate(healthy);
+            infected = removeDuplicate(infected);
             List<DataOutStruct> rename = new List<DataOutStruct>();
-            
+
             addlist(rename, healthy);
             addlist(rename, infected);
             for (int i = 0; i < healthy.Count(); i++)
             {
                 for (int j = 0; j < infected.Count(); j++)
                 {
-                    if (healthy[i].groupNum.Equals(infected[j].groupNum)) 
+                    if (healthy[i].groupNum.Equals(infected[j].groupNum))
                     {
                         rename.Remove(healthy[i]);
                     }
                 }
             }
+
             using (StreamWriter sw = new StreamWriter("./Data/G3.csv"))
             {
                 for (int i = 0; i < rename.Count(); i++)
@@ -343,24 +358,26 @@ namespace debugNetData
         {
             List<string> IBAC = new List<string>();
             List<DataOutStruct> G1Ret = new List<DataOutStruct>();
-            for ( int j = 0; j < infected.Count(); j++ )
+            for (int j = 0; j < infected.Count(); j++)
             {
-                IBAC.Add( infected[ j ].bacteria );
+                IBAC.Add(infected[j].bacteria);
             }
-            healthy = reduce( healthy , IBAC );
-            infected = reduce( infected , IBAC );
-            for ( int i = 0; i < healthy.Count(); i++ )
+
+            healthy = reduce(healthy, IBAC);
+            infected = reduce(infected, IBAC);
+            for (int i = 0; i < healthy.Count(); i++)
             {
-                for ( int j = 0; j < IBAC.Count(); j++ )
+                for (int j = 0; j < IBAC.Count(); j++)
                 {
-                    if ( healthy[ i ].bacteria.Equals( IBAC[ j ] ) )
+                    if (healthy[i].bacteria.Equals(IBAC[j]))
                     {
-                        G1Ret.Add( healthy[ i ] );
+                        G1Ret.Add(healthy[i]);
                     }
                 }
             }
-            List<DataOutStruct> health = reuse( healthy , G1Ret );
-            List<DataOutStruct> infect = reuse( infected , G1Ret );
+
+            List<DataOutStruct> health = reuse(healthy, G1Ret);
+            List<DataOutStruct> infect = reuse(infected, G1Ret);
             G1Ret.Clear();
             for (int i = 0; i < health.Count(); i++)
             {
@@ -375,82 +392,97 @@ namespace debugNetData
                     }
                 }
             }
-            
-            using ( StreamWriter recycle = new StreamWriter( "./Data/G4.csv" ) )
+
+            using (StreamWriter recycle = new StreamWriter("./Data/G4.csv"))
             {
-                for ( int i = 0; i < G1Ret.Count(); i++ )
-                    recycle.WriteLine( G1Ret[ i ].bacteria + "," + G1Ret[ i ].groupNum );
+                for (int i = 0; i < G1Ret.Count(); i++)
+                    recycle.WriteLine(G1Ret[i].bacteria + "," + G1Ret[i].groupNum);
             }
 
             return G1Ret;
         }
 
-        public static void G5(List<DataOutStruct> healthy, List<DataOutStruct> infected, String l1, String l2, String l3)
+        public static void G5(List<DataOutStruct> healthy, List<DataOutStruct> infected, String l1, String l2,
+            String l3)
         {
             List<DataOutStruct> LDOS1 = new List<DataOutStruct>();
             List<DataOutStruct> LDOS2 = new List<DataOutStruct>();
             List<DataOutStruct> LDOS3 = new List<DataOutStruct>();
 
-            if ( l1.Contains( "G1" ) )
-            { LDOS1 = G1( healthy , infected ); }
-            else
-            { LDOS1 = G4( healthy , infected ); }
-
-            if ( l2.Contains( "G2" ) )
-            { LDOS2 = G2( healthy , infected ); }
-            else
-            { LDOS2 = G3( healthy , infected ); }
-
-            if ( l3.Contains( "G2" ) )
-            { LDOS3 = G2( healthy , infected ); }
-            else
-            { LDOS3 = G3( healthy , infected ); }
-
-            for ( int i = 0; i < LDOS2.Count(); i++ )
-                LDOS1.Add( LDOS2[ i ] );
-
-            for ( int i = 0; i < LDOS3.Count(); i++ )
+            if (l1.Contains("G1"))
             {
-                if ( LDOS1[ i ].bacteria.Equals( LDOS3[ i ].bacteria ) )
+                //LDOS1 = G1(healthy, infected);
+            }
+            else
+            {
+                LDOS1 = G4(healthy, infected);
+            }
+
+            if (l2.Contains("G2"))
+            {
+                LDOS2 = G2(healthy, infected);
+            }
+            else
+            {
+                LDOS2 = G3(healthy, infected);
+            }
+
+            if (l3.Contains("G2"))
+            {
+                LDOS3 = G2(healthy, infected);
+            }
+            else
+            {
+                LDOS3 = G3(healthy, infected);
+            }
+
+            for (int i = 0; i < LDOS2.Count(); i++)
+                LDOS1.Add(LDOS2[i]);
+
+            for (int i = 0; i < LDOS3.Count(); i++)
+            {
+                if (LDOS1[i].bacteria.Equals(LDOS3[i].bacteria))
                 {
-                    LDOS1.Remove( LDOS3[ i ] );
+                    LDOS1.Remove(LDOS3[i]);
                 }
             }
-            using ( StreamWriter recycle = new StreamWriter( "./Data/G5.csv" ) )
-            {
-                for ( int i = 0; i < LDOS1.Count(); i++ )
-                    recycle.WriteLine( LDOS1[ i ].bacteria + "," + LDOS1[ i ].groupNum );
-            }
 
+            using (StreamWriter recycle = new StreamWriter("./Data/G5.csv"))
+            {
+                for (int i = 0; i < LDOS1.Count(); i++)
+                    recycle.WriteLine(LDOS1[i].bacteria + "," + LDOS1[i].groupNum);
+            }
         }
 
-        public static List<DataOutStruct> reduce ( List<DataOutStruct> dos , List<string> bac )
+        public static List<DataOutStruct> reduce(List<DataOutStruct> dos, List<string> bac)
         {
-            for ( int i = 0; i < dos.Count(); i++ )
+            for (int i = 0; i < dos.Count(); i++)
             {
-                if ( !bac.Contains( dos[ i ].bacteria ) )
+                if (!bac.Contains(dos[i].bacteria))
                 {
-                    dos.Remove( dos[ i ] );
+                    dos.Remove(dos[i]);
                 }
             }
+
             return dos;
         }
 
-        public static List<DataOutStruct> reuse ( List<DataOutStruct> dos , List<DataOutStruct> G1R )
+        public static List<DataOutStruct> reuse(List<DataOutStruct> dos, List<DataOutStruct> G1R)
         {
             List<DataOutStruct> temp = new List<DataOutStruct>();
             List<DataOutStruct> tG1R = G1R;
 
-            for ( int i = 0; i < dos.Count(); i++ )
+            for (int i = 0; i < dos.Count(); i++)
             {
-                for ( int j = 0; j < tG1R.Count(); j++ )
+                for (int j = 0; j < tG1R.Count(); j++)
                 {
-                    if ( dos[ i ].bacteria.Equals( tG1R[ j ].bacteria ) )
+                    if (dos[i].bacteria.Equals(tG1R[j].bacteria))
                     {
-                        temp.Add( dos[ i ] );
+                        temp.Add(dos[i]);
                     }
                 }
             }
+
             return temp;
         }
 
@@ -463,13 +495,13 @@ namespace debugNetData
 
             return addtolist;
         }
-        public static List<DataOutStruct> removeDuplicate ( List<DataOutStruct> a )
+
+        public static List<DataOutStruct> removeDuplicate(List<DataOutStruct> a)
         {
-            List<DataOutStruct> del = a.GroupBy( x => x.groupNum )
-                .Where( x => x.Count() == 1 )
-                .Select( x => x.FirstOrDefault() ).ToList();
+            List<DataOutStruct> del = a.GroupBy(x => x.groupNum)
+                .Where(x => x.Count() == 1)
+                .Select(x => x.FirstOrDefault()).ToList();
             return del;
         }
-
     } //-end of class
 }
