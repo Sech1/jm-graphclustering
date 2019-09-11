@@ -220,7 +220,7 @@ namespace debugNetData
                         d3 = G2(GroupInitializer(clusterVat.Vat0.Partition,
                             clusterVat.Vat1.Partition, clusterVat.HealthyCount, clusterVat.InfectedCount, healthyfile,
                             infectedfile, OutType.Vat, outList));
-                        dataOut = d1.Concat(d2).Where(x => !d3.Contains(x)).Distinct().ToList();
+                        dataOut = d1.Union(d2).Where(x => !d3.Contains(x)).OrderBy(x => x.Bacteria).Distinct().ToList();
                         break;
 
                     case ClusterType.G14:
@@ -233,7 +233,7 @@ namespace debugNetData
                         d3 = G2(GroupInitializer(clusterInt.Int0.Partition,
                             clusterInt.Int1.Partition, clusterInt.HealthyCount, clusterInt.InfectedCount, healthyfile,
                             infectedfile, OutType.Int, outList));
-                        dataOut = d1.Concat(d2).Where(x => !d3.Contains(x)).Distinct().ToList();
+                        dataOut = d1.Union(d2).Where(x => !d3.Contains(x)).OrderBy(x => x.Bacteria).Distinct().ToList();
                         break;
 
                     case ClusterType.G15:
@@ -246,7 +246,7 @@ namespace debugNetData
                         d3 = G2(GroupInitializer(clusterInt.Int0.Partition,
                             clusterInt.Int1.Partition, clusterInt.HealthyCount, clusterInt.InfectedCount, healthyfile,
                             infectedfile, OutType.Int, outList));
-                        dataOut = d1.Concat(d2).Where(x => !d3.Contains(x)).Distinct().ToList();
+                        dataOut = d1.Union(d2).Where(x => !d3.Contains(x)).OrderBy(x => x.Bacteria).Distinct().ToList();
                         break;
 
                     case ClusterType.G16:
@@ -259,7 +259,7 @@ namespace debugNetData
                         d3 = G2(GroupInitializer(clusterVat.Vat0.Partition,
                             clusterVat.Vat1.Partition, clusterVat.HealthyCount, clusterVat.InfectedCount, healthyfile,
                             infectedfile, OutType.Vat, outList));
-                        dataOut = d1.Concat(d2).Where(x => !d3.Contains(x)).Distinct().ToList();
+                        dataOut = d1.Union(d2).Where(x => !d3.Contains(x)).OrderBy(x => x.Bacteria).Distinct().ToList();
                         break;
 
                     case ClusterType.G17:
@@ -272,7 +272,7 @@ namespace debugNetData
                         d3 = G3(GroupInitializer(clusterVat.Vat0.Partition,
                             clusterVat.Vat1.Partition, clusterVat.HealthyCount, clusterVat.InfectedCount, healthyfile,
                             infectedfile, OutType.Vat, outList));
-                        dataOut = d1.Concat(d2).Where(x => !d3.Contains(x)).Distinct().ToList();
+                        dataOut = d1.Union(d2).Where(x => !d3.Contains(x)).OrderBy(x => x.Bacteria).Distinct().ToList();
                         break;
 
                     case ClusterType.G18:
@@ -285,7 +285,7 @@ namespace debugNetData
                         d3 = G3(GroupInitializer(clusterVat.Vat0.Partition,
                             clusterVat.Vat1.Partition, clusterVat.HealthyCount, clusterVat.InfectedCount, healthyfile,
                             infectedfile, OutType.Vat, outList));
-                        dataOut = d1.Concat(d2).Where(x => !d3.Contains(x)).Distinct().ToList();
+                        dataOut = d1.Union(d2).Where(x => !d3.Contains(x)).OrderBy(x => x.Bacteria).Distinct().ToList();
                         break;
 
                     case ClusterType.G19:
@@ -298,7 +298,7 @@ namespace debugNetData
                         d3 = G3(GroupInitializer(clusterVat.Vat0.Partition,
                             clusterVat.Vat1.Partition, clusterVat.HealthyCount, clusterVat.InfectedCount, healthyfile,
                             infectedfile, OutType.Vat, outList));
-                        dataOut = d1.Concat(d2).Where(x => !d3.Contains(x)).Distinct().ToList();
+                        dataOut = d1.Union(d2).Where(x => !d3.Contains(x)).OrderBy(x => x.Bacteria).Distinct().ToList();
                         break;
 
                     case ClusterType.G20:
@@ -311,7 +311,7 @@ namespace debugNetData
                         d3 = G3(GroupInitializer(clusterVat.Vat0.Partition,
                             clusterVat.Vat1.Partition, clusterVat.HealthyCount, clusterVat.InfectedCount, healthyfile,
                             infectedfile, OutType.Vat, outList));
-                        dataOut = d1.Concat(d2).Where(x => !d3.Contains(x)).Distinct().ToList();
+                        dataOut = d1.Union(d2).Where(x => !d3.Contains(x)).OrderBy(x => x.Bacteria).Distinct().ToList();
                         break;
 
                     case ClusterType.G21:
@@ -324,7 +324,7 @@ namespace debugNetData
                         d3 = G3(GroupInitializer(clusterVat.Vat0.Partition,
                             clusterVat.Vat1.Partition, clusterVat.HealthyCount, clusterVat.InfectedCount, healthyfile,
                             infectedfile, OutType.Vat, outList));
-                        dataOut = d1.Concat(d2).Where(x => !d3.Contains(x)).Distinct().ToList();
+                        dataOut = d1.Union(d2).Where(x => !d3.Contains(x)).OrderBy(x => x.Bacteria).Distinct().ToList();
                         break;
 
                     case ClusterType.G22:
@@ -337,7 +337,7 @@ namespace debugNetData
                         d3 = G3(GroupInitializer(clusterVat.Vat0.Partition,
                             clusterVat.Vat1.Partition, clusterVat.HealthyCount, clusterVat.InfectedCount, healthyfile,
                             infectedfile, OutType.Vat, outList));
-                        dataOut = d1.Concat(d2).Where(x => !d3.Contains(x)).Distinct().ToList();
+                        dataOut = d1.Union(d2).Where(x => !d3.Contains(x)).OrderBy(x => x.Bacteria).Distinct().ToList();
                         break;
 
                     case ClusterType.G23:
@@ -350,7 +350,7 @@ namespace debugNetData
                         d3 = G3(GroupInitializer(clusterVat.Vat0.Partition,
                             clusterVat.Vat1.Partition, clusterVat.HealthyCount, clusterVat.InfectedCount, healthyfile,
                             infectedfile, OutType.Vat, outList));
-                        dataOut = d1.Concat(d2).Where(x => !d3.Contains(x)).Distinct().ToList();
+                        dataOut = d1.Union(d2).Where(x => !d3.Contains(x)).OrderBy(x => x.Bacteria).Distinct().ToList();
                         break;
 
                     case ClusterType.G24:
@@ -363,7 +363,7 @@ namespace debugNetData
                         d3 = G3(GroupInitializer(clusterVat.Vat0.Partition,
                             clusterVat.Vat1.Partition, clusterVat.HealthyCount, clusterVat.InfectedCount, healthyfile,
                             infectedfile, OutType.Vat, outList));
-                        dataOut = d1.Concat(d2).Where(x => !d3.Contains(x)).Distinct().ToList();
+                        dataOut = d1.Union(d2).Where(x => !d3.Contains(x)).OrderBy(x => x.Bacteria).Distinct().ToList();
                         break;
 
                     case ClusterType.G25:
@@ -376,7 +376,7 @@ namespace debugNetData
                         d3 = G3(GroupInitializer(clusterVat.Vat0.Partition,
                             clusterVat.Vat1.Partition, clusterVat.HealthyCount, clusterVat.InfectedCount, healthyfile,
                             infectedfile, OutType.Vat, outList));
-                        dataOut = d1.Concat(d2).Where(x => !d3.Contains(x)).Distinct().ToList();
+                        dataOut = d1.Union(d2).Where(x => !d3.Contains(x)).OrderBy(x => x.Bacteria).Distinct().ToList();
                         break;
                 }
             }
