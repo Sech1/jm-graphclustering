@@ -204,7 +204,8 @@ namespace debugNetData
                         List<DataOutStruct> group2V = G2(GroupInitializer(clusterVat.Vat0.Partition,
                             clusterVat.Vat1.Partition, clusterVat.HealthyCount, clusterVat.InfectedCount, Healthyfile,
                             Infectedfile, OutType.Vat, outList));
-                        dataOut = group1V.Concat(group2I).Where(x => !group2V.Contains(x)).Distinct().ToList();
+                        dataOut = group1V.Union(group2I).Where(x => !group2V.Contains(x)).OrderBy(x => x.Bacteria)
+                            .Distinct().ToList();
                         break;
                 }
             }
