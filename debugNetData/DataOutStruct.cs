@@ -40,9 +40,37 @@ namespace debugNetData
 
     public struct DataOutStruct
     {
-        public string groupNum;
-        public string bacteria;
-        public string clusterType;
+        public string GroupNum;
+        public string Bacteria;
+        public string ClusterType;
+
+        public override bool Equals(object obj)
+        {
+            if (!(obj is DataOutStruct))
+            {
+                return false;
+            }
+
+            DataOutStruct other = (DataOutStruct) obj;
+            return Equals(other);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = (GroupNum != null ? GroupNum.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (Bacteria != null ? Bacteria.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (ClusterType != null ? ClusterType.GetHashCode() : 0);
+                return hashCode;
+            }
+        }
+
+        public bool Equals(DataOutStruct other)
+        {
+            return Bacteria == other.Bacteria && ClusterType == other.ClusterType
+                                              && GroupNum == other.GroupNum;
+        }
     }
 
     public struct IntCluster
