@@ -188,6 +188,24 @@ namespace debugNetData
                             cluster.HealthyCount,
                             cluster.InfectedCount, Healthyfile, Infectedfile, OutType.Vat, outList));
                         break;
+                    case ClusterType.G13:
+                        GeneralCluster clusterVat = returnClusterAndPartition(OutType.Vat, healthy, infected,
+                            healthyClusters,
+                            infectedClusters, Healthyfile, Infectedfile);
+                        GeneralCluster clusterInt = returnClusterAndPartition(OutType.Int, healthy, infected,
+                            healthyClusters,
+                            infectedClusters, Healthyfile, Infectedfile);
+                        List<DataOutStruct> group1V = G1(GroupInitializer(clusterVat.Vat0.Partition,
+                            clusterVat.Vat1.Partition, clusterVat.HealthyCount, clusterVat.InfectedCount, Healthyfile,
+                            Infectedfile, OutType.Vat, outList));
+                        List<DataOutStruct> group2I = G2(GroupInitializer(clusterInt.Int0.Partition,
+                            clusterInt.Int1.Partition, clusterInt.HealthyCount, clusterInt.InfectedCount, Healthyfile,
+                            Infectedfile, OutType.Int, outList));
+                        List<DataOutStruct> group2V = G2(GroupInitializer(clusterVat.Vat0.Partition,
+                            clusterVat.Vat1.Partition, clusterVat.HealthyCount, clusterVat.InfectedCount, Healthyfile,
+                            Infectedfile, OutType.Vat, outList));
+                        dataOut = group1V.Concat(group2I).Where(x => !group2V.Contains(x)).Distinct().ToList();
+                        break;
                 }
             }
             else
@@ -332,9 +350,8 @@ namespace debugNetData
                 filteredList.Add(newList);
             }
 
-            //UNION CODE      
-            //List<DataOutStruct> outList = filteredList[1].Union(filteredList[0]).Distinct().ToList();
-            List<DataOutStruct> outList = filteredList[0].Intersect(filteredList[1]).Distinct().ToList();
+            List<DataOutStruct> outList = filteredList[0].Intersect(filteredList[1]).OrderBy(x => x.Bacteria).Distinct()
+                .ToList();
             return outList;
         }
 
@@ -409,21 +426,38 @@ namespace debugNetData
         /// <summary>
         /// G4 finds all bacteria with group number being "N/A" in one file but not the other 
         /// </summary>
-        public static List<DataOutStruct> G4(List<List<DataOutStruct>> data)
+        public static List<DataOutStruct> G4(List<List<DataOutStruct>> dataSet)
         {
-            List<List<DataOutStruct>> filteredList = new List<List<DataOutStruct>>();
-            foreach (List<DataOutStruct> dataSet in data)
+            List<DataOutStruct> healthyList = new List<DataOutStruct>();
+            List<DataOutStruct> infectedList = new List<DataOutStruct>();
+
+            foreach (DataOutStruct healthy in dataSet[0])
             {
-                List<DataOutStruct> newList = dataSet.Where(x => x.GroupNum.Equals("N/A")).ToList();
-                filteredList.Add(newList);
+                foreach (DataOutStruct infected in dataSet[1])
+                {
+                    if ((healthy.Bacteria.Equals(infected.Bacteria)) &&
+                        (healthy.GroupNum == "N/A" && infected.GroupNum != "N/A"))
+                    {
+                        healthyList.Add(healthy);
+                    }
+                }
             }
 
-            //UNION CODE      
-            //List<DataOutStruct> outList = filteredList[1].Union(filteredList[0]).Distinct().ToList();
-//            List<DataOutStruct> healthyFilter = filteredList[0].Where(f => !filteredList[1].Contains(f)).ToList();
-//            List<DataOutStruct> infectedFilter = filteredList[1].Where(f => !filteredList[0].Contains(f)).ToList();
-            List<DataOutStruct> outList = filteredList[0].Except(filteredList[1])
-                .Union(filteredList[1].Except(filteredList[0])).ToList();
+            foreach (DataOutStruct infected in dataSet[1])
+            {
+                foreach (DataOutStruct healthy in dataSet[0])
+                {
+                    if ((infected.Bacteria.Equals(healthy.Bacteria)) &&
+                        (infected.GroupNum == "N/A" && healthy.GroupNum != "N/A"))
+                    {
+                        infectedList.Add(infected);
+                    }
+                }
+            }
+
+            infectedList = infectedList.Distinct().ToList();
+            healthyList = healthyList.Distinct().ToList();
+            List<DataOutStruct> outList = healthyList.Union(infectedList).Distinct().OrderBy(x => x.Bacteria).ToList();
             return outList;
         }
 
