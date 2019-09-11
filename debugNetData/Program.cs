@@ -461,58 +461,6 @@ namespace debugNetData
             return outList;
         }
 
-        public static void G5(List<DataOutStruct> healthy, List<DataOutStruct> infected, String l1, String l2,
-            String l3)
-        {
-            List<DataOutStruct> LDOS1 = new List<DataOutStruct>();
-            List<DataOutStruct> LDOS2 = new List<DataOutStruct>();
-            List<DataOutStruct> LDOS3 = new List<DataOutStruct>();
-
-            if (l1.Contains("G1"))
-            {
-                //LDOS1 = G1(healthy, infected);
-            }
-            else
-            {
-                //LDOS1 = G4(healthy, infected);
-            }
-
-            if (l2.Contains("G2"))
-            {
-                //LDOS2 = G2(healthy, infected);
-            }
-            else
-            {
-                //LDOS2 = G3(healthy, infected);
-            }
-
-            if (l3.Contains("G2"))
-            {
-                //LDOS3 = G2(healthy, infected);
-            }
-            else
-            {
-                //LDOS3 = G3(healthy, infected);
-            }
-
-            for (int i = 0; i < LDOS2.Count(); i++)
-                LDOS1.Add(LDOS2[i]);
-
-            for (int i = 0; i < LDOS3.Count(); i++)
-            {
-                if (LDOS1[i].Bacteria.Equals(LDOS3[i].Bacteria))
-                {
-                    LDOS1.Remove(LDOS3[i]);
-                }
-            }
-
-            using (StreamWriter recycle = new StreamWriter("./Data/G5.csv"))
-            {
-                for (int i = 0; i < LDOS1.Count(); i++)
-                    recycle.WriteLine(LDOS1[i].Bacteria + "," + LDOS1[i].GroupNum);
-            }
-        }
-
         public static List<DataOutStruct> reduce(List<DataOutStruct> dos, List<string> bac)
         {
             for (int i = 0; i < dos.Count(); i++)
