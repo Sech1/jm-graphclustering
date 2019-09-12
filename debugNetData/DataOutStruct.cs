@@ -72,7 +72,7 @@ namespace debugNetData
                                               && GroupNum == other.GroupNum;
         }
     }
-
+    
     public struct IntCluster
     {
         public HIntegrityClust Cluster;
