@@ -65,7 +65,7 @@ namespace debugNetData
                 return hashCode;
             }
         }
-
+        
         public bool Equals(DataOutStruct other)
         {
             return Bacteria == other.Bacteria && ClusterType == other.ClusterType
@@ -103,5 +103,31 @@ namespace debugNetData
         public IntCluster Int1;
         public int[] InfectedCount;
         public int[] HealthyCount;
+    }
+
+    public class idCompare : System.Collections.Generic.IEqualityComparer<DataOutStruct>
+    {
+        public bool Equals ( DataOutStruct x , DataOutStruct y )
+        {
+            if ( object.ReferenceEquals( x , y ) )
+            {
+                return true;
+            }
+            if ( object.ReferenceEquals( x , null ) ||
+                object.ReferenceEquals( y , null ) )
+            {
+                return false;
+            }
+            return x.Bacteria == y.Bacteria;
+        }
+
+        public int GetHashCode ( DataOutStruct obj )
+        {
+            if ( obj.Equals(null) )
+            {
+                return 0;
+            }
+            return obj.Bacteria.GetHashCode();
+        }
     }
 }

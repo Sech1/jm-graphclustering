@@ -378,23 +378,6 @@ namespace debugNetData
                         clusterVat.Vat1.Partition , clusterVat.HealthyCount , clusterVat.InfectedCount , healthyfile ,
                         infectedfile , OutType.Vat , outList ) );
                     dataOut = d1.Union( d2 ).Where( x => !d3.Contains( x ) ).OrderBy( x => x.Bacteria ).Distinct().ToList();
-                    Console.WriteLine( "d1\n" );
-                    for ( int i = 0; i < d1.Count(); i++ )
-                    {
-                        Console.WriteLine( d1[ i ].Bacteria + " ***** " + d1[ i ].GroupNum );
-                    }
-                    Console.WriteLine();
-                    Console.WriteLine( "d2\n" );
-                    for ( int i = 0; i < d2.Count(); i++ )
-                    {
-                        Console.WriteLine( d2[ i ].Bacteria + " ***** " + d2[ i ].GroupNum );
-                    }
-                    Console.WriteLine();
-                    Console.WriteLine( "d3\n" );
-                    for ( int i = 0; i < d3.Count(); i++ )
-                    {
-                        Console.WriteLine( d3[ i ].Bacteria + " ***** " + d3[ i ].GroupNum );
-                    }
                     break;
                 }
             }
@@ -402,10 +385,10 @@ namespace debugNetData
             {
                 Console.WriteLine( "Please input a valid output type (VAT, INT, TEN) as the third parameter." );
             }
-            Console.WriteLine( dataOut.Count() );
+           // Console.WriteLine( dataOut.Count() );
             for ( int i = 0; i < dataOut.Count(); i++ )
             {
-                Console.WriteLine( dataOut[ i ].Bacteria + " ****** " + dataOut[ i ].GroupNum );
+                //Console.WriteLine( dataOut[ i ].Bacteria );
             }
             return dataOut;
         }
@@ -580,24 +563,27 @@ namespace debugNetData
         /// </summary>
         public static List<DataOutStruct> G3 ( List<List<DataOutStruct>> dataSet )
         {
-            List<DataOutStruct> healthy = RemoveDuplicate( dataSet[ 0 ] );
+            List<DataOutStruct> healthy =  RemoveDuplicate( dataSet[ 0 ] );
             List<DataOutStruct> infected = RemoveDuplicate( dataSet[ 1 ] );
             List<DataOutStruct> dataout = new List<DataOutStruct>();
-            for ( int i = 0; i < healthy.Count(); i++ )
-            {
-                for ( int j = 0; j < infected.Count(); j++ )
-                {
-                    if ( !healthy[ i ].Bacteria.Equals( infected[ j ].Bacteria ) )
-                    {
-                        dataout = healthy.Union( infected ).Distinct().ToList();
-                    }
-                }
-            }
-            List<DataOutStruct> outlist = dataout.Distinct().ToList();
+            OneOrTheOther( dataSet );
+            
+            dataout = infected.Union( healthy).ToList();
 
+            return dataout;
+
+
+
+        }
+        public static List<DataOutStruct> OneOrTheOther(List<List<DataOutStruct>> dataset )
+        {
+            List<DataOutStruct> healthy =  dataset[ 0 ] ;
+            List<DataOutStruct> infected =  dataset[ 1 ] ;
+            List<DataOutStruct> outlist = new List<DataOutStruct>();
+            List<string> helpme = new List<string>();
+            outlist = infected.Except( healthy , new idCompare() ).OrderBy( x => x.Bacteria ).ToList();
             return outlist;
         }
-
 
         /// <summary>
         /// G4 finds all bacteria with group number being "N/A" in one file but not the other 
