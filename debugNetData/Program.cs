@@ -189,9 +189,9 @@ namespace debugNetData
                         d1 = G1(GroupInitializer(clusterVat.Vat0.Partition,
                             clusterVat.Vat1.Partition, clusterVat.HealthyCount, clusterVat.InfectedCount, healthyfile,
                             infectedfile, OutType.Vat, outList));
-                        d2 = G2( clusterTen.Ten0.Partition, clusterTen.Ten1.Partition,
+                        d2 = G2(clusterTen.Ten0.Partition, clusterTen.Ten1.Partition,
                             OutType.Ten);
-                        d3 = G2( clusterInt.Int0.Partition, clusterInt.Int1.Partition,
+                        d3 = G2(clusterInt.Int0.Partition, clusterInt.Int1.Partition,
                             OutType.Int);
                         dataOut = d1.Union(d2).Where(x => !d3.Contains(x)).OrderBy(x => x.Bacteria).Distinct().ToList();
                         break;
@@ -202,7 +202,7 @@ namespace debugNetData
                             infectedfile, OutType.Ten, outList));
                         d2 = G2(clusterTen.Ten0.Partition, clusterTen.Ten1.Partition,
                             OutType.Ten);
-                        d3 = G2( clusterInt.Int0.Partition, clusterInt.Int1.Partition,
+                        d3 = G2(clusterInt.Int0.Partition, clusterInt.Int1.Partition,
                             OutType.Int);
                         dataOut = d1.Union(d2).Where(x => !d3.Contains(x)).OrderBy(x => x.Bacteria).Distinct().ToList();
                         break;
@@ -211,9 +211,9 @@ namespace debugNetData
                         d1 = G1(GroupInitializer(clusterInt.Int0.Partition,
                             clusterInt.Int0.Partition, clusterInt.HealthyCount, clusterInt.InfectedCount, healthyfile,
                             infectedfile, OutType.Int, outList));
-                        d2 = G2( clusterInt.Int0.Partition, clusterInt.Int1.Partition,
+                        d2 = G2(clusterInt.Int0.Partition, clusterInt.Int1.Partition,
                             OutType.Int);
-                        d3 = G2( clusterVat.Vat0.Partition, clusterVat.Vat1.Partition,
+                        d3 = G2(clusterVat.Vat0.Partition, clusterVat.Vat1.Partition,
                             OutType.Vat);
                         dataOut = d1.Union(d2).Where(x => !d3.Contains(x)).OrderBy(x => x.Bacteria).Distinct().ToList();
                         break;
@@ -519,7 +519,7 @@ namespace debugNetData
                     infected.Add(singleNode);
                 }
             }
-            
+
             infectedList = infected.Except(healthy).Distinct().ToList();
             healthyList = healthy.Except(infected).Distinct().ToList();
             //List<DataOutStruct> outList = healthyList.Union(infectedList).Distinct().OrderBy(x => x.Bacteria).ToList();
