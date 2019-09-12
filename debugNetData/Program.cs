@@ -2,6 +2,7 @@
 using NetMining.Graphs;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 
@@ -78,15 +79,15 @@ namespace debugNetData
             // Uses a switch statement to decide which clustering to run.
             if (args.Length == 3)
             {
-                List<DataOutStruct> outData = ConstructList(args, healthy, infected, healthyfile, infectedfile,
+                List<DataOutStruct> outData = ConstructList(args[2], healthy, infected, healthyfile, infectedfile,
                     healthyClusters, infectedClusters);
-                using (StreamWriter sw = new StreamWriter(args + ".csv"))
+                using (StreamWriter sw = new StreamWriter(datapath + "/"+ args[2] + ".csv"))
                 {
                     for (int i = 0; i < outData.Count(); i++)
                         sw.WriteLine(outData[i].Bacteria + ", " + outData[i].GroupNum);
                 }
 
-                Console.WriteLine(args + ".csv successfully created");
+                Console.WriteLine(args[2] + ".csv successfully created");
             }
             else
             {
@@ -98,13 +99,13 @@ namespace debugNetData
             }
         }
 
-        private static List<DataOutStruct> ConstructList(string[] args, LightWeightGraph healthy,
+        private static List<DataOutStruct> ConstructList(string args, LightWeightGraph healthy,
             LightWeightGraph infected, String healthyfile, String infectedfile, int healthyClusters,
             int infectedClusters)
         {
             List<List<DataOutStruct>> outList = new List<List<DataOutStruct>>();
             List<DataOutStruct> dataOut = new List<DataOutStruct>();
-            if (Enum.TryParse<ClusterType>(args[2], ignoreCase: true, result: out var userOut))
+            if (Enum.TryParse<ClusterType>(args, ignoreCase: true, result: out var userOut))
             {
                 GeneralCluster cluster;
                 GeneralCluster clusterVat = ReturnClusterAndPartition(OutType.Vat, healthy, infected,
@@ -377,6 +378,23 @@ namespace debugNetData
                             clusterVat.Vat1.Partition, clusterVat.HealthyCount, clusterVat.InfectedCount, healthyfile,
                             infectedfile, OutType.Vat, outList));
                         dataOut = d1.Union(d2).Where(x => !d3.Contains(x)).OrderBy(x => x.Bacteria).Distinct().ToList();
+                        Console.WriteLine("d1\n");
+                        for (int i = 0; i < d1.Count(); i++)
+                        {
+                            Console.WriteLine(d1[i].Bacteria + " ***** " + d1[i].GroupNum);
+                        }
+                        Console.WriteLine();
+                        Console.WriteLine("d2\n");
+                        for (int i = 0; i < d2.Count(); i++)
+                        {
+                            Console.WriteLine(d2[i].Bacteria + " ***** " + d2[i].GroupNum);
+                        }
+                        Console.WriteLine();
+                        Console.WriteLine("d3\n");
+                        for (int i = 0; i < d3.Count(); i++)
+                        {
+                            Console.WriteLine(d3[i].Bacteria + " ***** " + d3[i].GroupNum);
+                        }
                         break;
                 }
             }
@@ -384,7 +402,11 @@ namespace debugNetData
             {
                 Console.WriteLine("Please input a valid output type (VAT, INT, TEN) as the third parameter.");
             }
-
+            Console.WriteLine(dataOut.Count() );
+            for (int i = 0; i < dataOut.Count(); i++)
+            {
+                Console.WriteLine(dataOut[i].Bacteria + " ****** " + dataOut[i].GroupNum );
+            }
             return dataOut;
         }
 
@@ -531,34 +553,25 @@ namespace debugNetData
         /// <summary>
         /// G2 finds all unique maching clusters
         /// </summary>
-        public static List<DataOutStruct> G2(List<List<DataOutStruct>> dataSet)
+        public static List<DataOutStruct> G2(List<List<DataOutStruct>> data)
         {
-            List<DataOutStruct> healthy = RemoveDuplicate(dataSet[0]);
-            List<DataOutStruct> infected = RemoveDuplicate(dataSet[1]);
+            List<DataOutStruct> healthy = RemoveDuplicate(data[0]);
+            List<DataOutStruct> infected = RemoveDuplicate(data[1]);
             List<DataOutStruct> dataout = new List<DataOutStruct>();
+            
             for (int i = 0; i < healthy.Count(); i++)
             {
                 for (int j = 0; j < infected.Count(); j++)
                 {
                     if (healthy[i].Bacteria.Equals(infected[j].Bacteria))
                     {
-                        if (healthy[i].GroupNum.Equals(infected[j].GroupNum))
-                        {
-                            dataout.Add(healthy[i]);
-                        }
+                        dataout.Add(healthy[i]);
                     }
                 }
             }
 
-            using (StreamWriter sw = new StreamWriter("./Data/G2.csv"))
-            {
-                for (int i = 0; i < dataout.Count(); i++)
-                {
-                    sw.WriteLine(dataout[i].Bacteria + "," + dataout[i].GroupNum);
-                }
-            }
-
-            return dataout;
+            List<DataOutStruct> outlist = dataout.Distinct().ToList();
+            return outlist;
         }
 
 
@@ -571,28 +584,20 @@ namespace debugNetData
             List<DataOutStruct> infected = RemoveDuplicate(dataSet[1]);
             List<DataOutStruct> dataout = new List<DataOutStruct>();
 
-            Addlist(dataout, healthy);
-            Addlist(dataout, infected);
             for (int i = 0; i < healthy.Count(); i++)
             {
                 for (int j = 0; j < infected.Count(); j++)
                 {
-                    if (healthy[i].GroupNum.Equals(infected[j].GroupNum))
+                    if //(healthy[i].GroupNum.Equals(infected[j].GroupNum) 
+                        (healthy[i].Bacteria.Equals(infected[j].Bacteria))
                     {
-                        dataout.Remove(healthy[i]);
+                        dataout.Add(healthy[i]);
                     }
                 }
             }
+            List<DataOutStruct> outlist = dataout.Distinct().ToList();
 
-            using (StreamWriter sw = new StreamWriter("./Data/G3.csv"))
-            {
-                for (int i = 0; i < dataout.Count(); i++)
-                {
-                    sw.WriteLine(dataout[i].Bacteria + " , " + dataout[i].GroupNum);
-                }
-            }
-
-            return dataout;
+            return outlist;
         }
 
 
@@ -664,16 +669,6 @@ namespace debugNetData
             }
 
             return temp;
-        }
-
-        public static List<DataOutStruct> Addlist(List<DataOutStruct> addtolist, List<DataOutStruct> existinglist)
-        {
-            for (int i = 0; i < existinglist.Count(); i++)
-            {
-                addtolist.Add(existinglist[i]);
-            }
-
-            return addtolist;
         }
 
         public static List<DataOutStruct> RemoveDuplicate(List<DataOutStruct> a)
