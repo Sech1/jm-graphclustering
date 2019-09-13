@@ -14,7 +14,6 @@ namespace debugNetData
         {
             String workingDir = Directory.GetCurrentDirectory();
             String datapath = workingDir + "/Data";
-            Console.WriteLine(datapath);
             if (!Directory.Exists(datapath))
             {
                 Directory.CreateDirectory(datapath);
@@ -25,7 +24,7 @@ namespace debugNetData
             if (args.Length == 0)
             {
                 Console.WriteLine(
-                    "Usage: Program.cs <Healthyfile> <Infectedfile> <clusterType> ");
+                    "Usage: Program.cs <Healthyfile> <Infectedfile> <Group> ");
                 Environment.Exit(0);
             }
 
@@ -129,8 +128,6 @@ namespace debugNetData
                     for (int i = 0; i < outData.Count(); i++)
                         sw.WriteLine(outData[i].Bacteria + ", " + outData[i].GroupNum);
                 }
-
-                Console.WriteLine(args[2] + ".csv successfully created");
             }
             else
             {
@@ -439,9 +436,6 @@ namespace debugNetData
                 }
             }
             else
-            {
-                Console.WriteLine("Please input a valid output type (VAT, INT, TEN) as the third parameter.");
-            }
 
             return dataOut;
         }
