@@ -14,7 +14,7 @@ namespace debugNetData
         {
             String workingDir = Directory.GetCurrentDirectory();
             String datapath = workingDir + "/Data";
-
+            Console.WriteLine(datapath);
             if (!Directory.Exists(datapath))
             {
                 Directory.CreateDirectory(datapath);
@@ -42,11 +42,18 @@ namespace debugNetData
             try
             {
                 healthyfile = args[0];
-                infectedfile = args[1];
             }
-            catch (Exception DirectoryNotFoundException)
+            catch (Exception e)
             {
                 healthyfile = Path.GetFileName(args[0]);
+            }
+
+            try
+            {
+                infectedfile = args[1];
+            }
+            catch(Exception e)
+            {
                 infectedfile = Path.GetFileName(args[1]);
             }
 
@@ -54,6 +61,30 @@ namespace debugNetData
             LightWeightGraph infected = LightWeightGraph.GetGraphFromGML($"{infectedfile}");
             healthyfile = healthyfile.Split('.')[0];
             infectedfile = infectedfile.Split('.')[0];
+
+
+            if (healthyfile.Contains("/"))
+            {
+                healthyfile = healthyfile.Split('/').Last();
+                healthyfile = datapath + "/" + healthyfile;
+            }
+            if (healthyfile.Contains("\\"))
+            {
+                healthyfile = healthyfile.Split('\\').Last();
+                healthyfile = datapath + "\\" + healthyfile;
+            }
+
+            if (infectedfile.Contains("/"))
+            {
+                infectedfile = infectedfile.Split('/').Last();
+                infectedfile = datapath + "/" + infectedfile;
+            }
+            if (infectedfile.Contains("\\"))
+            {
+                infectedfile = infectedfile.Split('\\').Last();
+                infectedfile = datapath + "\\" + infectedfile;
+            }
+
             healthy.SaveGraph(healthyfile + ".graph");
             infected.SaveGraph(infectedfile + ".graph");
             // Makes a list of what the nodes reference
