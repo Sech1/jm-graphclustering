@@ -435,7 +435,6 @@ namespace debugNetData
                         break;
                 }
             }
-            else
 
             return dataOut;
         }
@@ -659,16 +658,6 @@ namespace debugNetData
             return outList;
         }
 
-        public static List<DataOutStruct> OneOrTheOther(List<List<DataOutStruct>> dataset)
-        {
-            List<DataOutStruct> healthy = dataset[0];
-            List<DataOutStruct> infected = dataset[1];
-            List<DataOutStruct> outlist = new List<DataOutStruct>();
-            List<string> helpme = new List<string>();
-            outlist = infected.Except(healthy, new idCompare()).OrderBy(x => x.Bacteria).ToList();
-            return outlist;
-        }
-
         /// <summary>
         /// G4 finds all bacteria with group number being "N/A" in one file but not the other 
         /// </summary>
@@ -709,44 +698,5 @@ namespace debugNetData
             return outList;
         }
 
-        public static List<DataOutStruct> Reduce(List<DataOutStruct> dos, List<string> bac)
-        {
-            for (int i = 0; i < dos.Count(); i++)
-            {
-                if (!bac.Contains(dos[i].Bacteria))
-                {
-                    dos.Remove(dos[i]);
-                }
-            }
-
-            return dos;
-        }
-
-        public static List<DataOutStruct> Reuse(List<DataOutStruct> dos, List<DataOutStruct> g1R)
-        {
-            List<DataOutStruct> temp = new List<DataOutStruct>();
-            List<DataOutStruct> tG1R = g1R;
-
-            for (int i = 0; i < dos.Count(); i++)
-            {
-                for (int j = 0; j < tG1R.Count(); j++)
-                {
-                    if (dos[i].Bacteria.Equals(tG1R[j].Bacteria))
-                    {
-                        temp.Add(dos[i]);
-                    }
-                }
-            }
-
-            return temp;
-        }
-
-        public static List<DataOutStruct> RemoveDuplicate(List<DataOutStruct> a)
-        {
-            List<DataOutStruct> del = a.GroupBy(x => x.GroupNum)
-                .Where(x => x.Count() == 1)
-                .Select(x => x.FirstOrDefault()).ToList();
-            return del;
-        }
     } //-end of class
 }
