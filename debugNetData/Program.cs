@@ -697,6 +697,9 @@ namespace debugNetData
             List<DataOutStruct> outList = healthyList.Union(infectedList).Distinct().OrderBy(x => x.Bacteria).ToList();
             return outList;
         }
+<<<<<<< HEAD
 
+=======
+>>>>>>> master
     } //-end of class
 }
