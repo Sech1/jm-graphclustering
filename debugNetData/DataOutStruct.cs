@@ -101,8 +101,12 @@ namespace debugNetData
         public TenCluster Ten1;
         public IntCluster Int0;
         public IntCluster Int1;
-        public int[] InfectedCount;
-        public int[] HealthyCount;
+        public int[] InfectedVatCount;
+        public int[] HealthyVatCount;
+        public int[] InfectedIntCount;
+        public int[] HealthyIntCount;
+        public int[] InfectedTenCount;
+        public int[] HealthyTenCount;
     }
 
     public class idCompare : System.Collections.Generic.IEqualityComparer<DataOutStruct>

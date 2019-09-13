@@ -107,195 +107,290 @@ namespace debugNetData
             List<DataOutStruct> dataOut = new List<DataOutStruct>();
             if (Enum.TryParse<ClusterType>(args, ignoreCase: true, result: out var userOut))
             {
-                GeneralCluster cluster;
-                GeneralCluster clusterVat = ReturnClusterAndPartition(OutType.Vat, healthy, infected,
-                    healthyClusters,
-                    infectedClusters, healthyfile, infectedfile);
-                GeneralCluster clusterTen = ReturnClusterAndPartition(OutType.Ten, healthy, infected,
-                    healthyClusters,
-                    infectedClusters, healthyfile, infectedfile);
-                GeneralCluster clusterInt = ReturnClusterAndPartition(OutType.Int, healthy, infected,
-                    healthyClusters,
-                    infectedClusters, healthyfile, infectedfile);
+                GeneralCluster cluster = ReturnClusterAndPartition(healthy, infected, healthyClusters, infectedClusters,
+                    healthyfile, infectedfile);
                 List<DataOutStruct> d1;
                 List<DataOutStruct> d2;
                 List<DataOutStruct> d3;
                 switch (userOut)
                 {
                     case ClusterType.G1I:
-                        dataOut = G1(GroupInitializer(clusterInt.Int0.Partition, clusterInt.Int1.Partition,
-                            clusterInt.HealthyCount,
-                            clusterInt.InfectedCount, healthyfile, infectedfile, OutType.Int, outList));
+                        dataOut = G1(GroupInitializer(cluster.Int0.Partition, cluster.Int1.Partition,
+                            cluster.HealthyIntCount, cluster.InfectedIntCount, healthyfile, infectedfile, OutType.Int,
+                            outList));
                         break;
                     case ClusterType.G1T:
-                        dataOut = G1(GroupInitializer(clusterTen.Ten0.Partition, clusterTen.Ten1.Partition,
-                            clusterTen.HealthyCount,
-                            clusterTen.InfectedCount, healthyfile, infectedfile, OutType.Ten, outList));
+                        dataOut = G1(GroupInitializer(cluster.Ten0.Partition, cluster.Ten1.Partition,
+                            cluster.HealthyTenCount, cluster.InfectedTenCount, healthyfile, infectedfile, OutType.Ten,
+                            outList));
                         break;
                     case ClusterType.G1V:
-                        dataOut = G1(GroupInitializer(clusterVat.Vat0.Partition, clusterVat.Vat1.Partition,
-                            clusterVat.HealthyCount,
-                            clusterVat.InfectedCount, healthyfile, infectedfile, OutType.Vat, outList));
+                        dataOut = G1(GroupInitializer(cluster.Vat0.Partition, cluster.Vat1.Partition,
+                            cluster.HealthyVatCount, cluster.InfectedVatCount, healthyfile, infectedfile, OutType.Vat,
+                            outList));
                         break;
                     case ClusterType.G2I:
-                        dataOut = G2(clusterInt.Int0.Partition, clusterInt.Int1.Partition, OutType.Int);
+                        dataOut = G2(
+                            GroupInitializer(cluster.Int0.Partition, cluster.Int1.Partition, cluster.HealthyIntCount,
+                                cluster.InfectedIntCount, healthyfile, infectedfile, OutType.Int, outList),
+                            cluster.Int0.Partition, cluster.Int1.Partition, OutType.Int);
                         break;
                     case ClusterType.G2T:
-                        dataOut = G2(clusterTen.Ten0.Partition, clusterTen.Ten1.Partition, OutType.Ten);
+                        dataOut = G2(
+                            GroupInitializer(cluster.Ten0.Partition, cluster.Ten1.Partition, cluster.HealthyTenCount,
+                                cluster.InfectedTenCount, healthyfile, infectedfile, OutType.Ten, outList),
+                            cluster.Ten0.Partition, cluster.Ten1.Partition, OutType.Ten);
                         break;
                     case ClusterType.G2V:
-                        dataOut = G2(clusterVat.Vat0.Partition, clusterVat.Vat1.Partition, OutType.Vat);
+                        dataOut = G2(
+                            GroupInitializer(cluster.Vat0.Partition, cluster.Vat1.Partition, cluster.HealthyVatCount,
+                                cluster.InfectedVatCount, healthyfile, infectedfile, OutType.Vat, outList),
+                            cluster.Vat0.Partition, cluster.Vat1.Partition, OutType.Vat);
                         break;
                     case ClusterType.G3I:
-                        dataOut = G3(clusterInt.Int0.Partition, clusterInt.Int1.Partition, OutType.Int);
+                        dataOut = G3(
+                            GroupInitializer(cluster.Int0.Partition, cluster.Int1.Partition, cluster.HealthyIntCount,
+                                cluster.InfectedIntCount, healthyfile, infectedfile, OutType.Int, outList),
+                            cluster.Int0.Partition, cluster.Int1.Partition, OutType.Int);
                         break;
                     case ClusterType.G3T:
-                        dataOut = G3(clusterTen.Ten0.Partition, clusterTen.Ten1.Partition, OutType.Ten);
+                        dataOut = G3(
+                            GroupInitializer(cluster.Ten0.Partition, cluster.Ten1.Partition, cluster.HealthyTenCount,
+                                cluster.InfectedTenCount, healthyfile, infectedfile, OutType.Ten, outList),
+                            cluster.Ten0.Partition, cluster.Ten1.Partition, OutType.Ten);
                         break;
                     case ClusterType.G3V:
-                        dataOut = G3(clusterVat.Vat0.Partition, clusterVat.Vat1.Partition, OutType.Vat);
+                        dataOut = G3(
+                            GroupInitializer(cluster.Vat0.Partition, cluster.Vat1.Partition,
+                                cluster.HealthyVatCount, cluster.InfectedVatCount, healthyfile, infectedfile,
+                                OutType.Vat, outList), cluster.Vat0.Partition, cluster.Vat1.Partition, OutType.Vat);
                         break;
                     case ClusterType.G4I:
-                        dataOut = G4(GroupInitializer(clusterInt.Int0.Partition, clusterInt.Int1.Partition,
-                            clusterInt.HealthyCount,
-                            clusterInt.InfectedCount, healthyfile, infectedfile, OutType.Int, outList));
+                        dataOut = G4(GroupInitializer(cluster.Int0.Partition, cluster.Int1.Partition,
+                            cluster.HealthyIntCount, cluster.InfectedIntCount, healthyfile, infectedfile, OutType.Int,
+                            outList));
                         break;
                     case ClusterType.G4T:
-                        dataOut = G4(GroupInitializer(clusterTen.Ten0.Partition, clusterTen.Ten1.Partition,
-                            clusterTen.HealthyCount,
-                            clusterTen.InfectedCount, healthyfile, infectedfile, OutType.Ten, outList));
+                        dataOut = G4(GroupInitializer(cluster.Ten0.Partition, cluster.Ten1.Partition,
+                            cluster.HealthyTenCount, cluster.InfectedTenCount, healthyfile, infectedfile, OutType.Ten,
+                            outList));
                         break;
                     case ClusterType.G4V:
-                        dataOut = G4(GroupInitializer(clusterVat.Vat0.Partition, clusterVat.Vat1.Partition,
-                            clusterVat.HealthyCount,
-                            clusterVat.InfectedCount, healthyfile, infectedfile, OutType.Vat, outList));
+                        dataOut = G4(GroupInitializer(cluster.Vat0.Partition, cluster.Vat1.Partition,
+                            cluster.HealthyVatCount, cluster.InfectedVatCount, healthyfile, infectedfile, OutType.Vat,
+                            outList));
                         break;
 
                     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                     //                                            start of G13 - G25                                               //
                     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                     case ClusterType.G13:
-                        d1 = G1(GroupInitializer(clusterVat.Vat0.Partition,
-                            clusterVat.Vat1.Partition, clusterVat.HealthyCount, clusterVat.InfectedCount, healthyfile,
+                        d1 = G1(GroupInitializer(cluster.Vat0.Partition,
+                            cluster.Vat1.Partition, cluster.HealthyVatCount, cluster.InfectedVatCount, healthyfile,
                             infectedfile, OutType.Vat, outList));
-                        d2 = G2(clusterInt.Int0.Partition, clusterInt.Int1.Partition,
-                            OutType.Int);
-                        d3 = G2(clusterVat.Vat0.Partition, clusterVat.Vat1.Partition,
-                            OutType.Vat);
+                        d2 = G2(
+                            GroupInitializer(cluster.Int0.Partition, cluster.Int1.Partition, cluster.HealthyIntCount,
+                                cluster.InfectedIntCount, healthyfile, infectedfile, OutType.Int, outList),
+                            cluster.Int0.Partition, cluster.Int1.Partition, OutType.Int);
+                        d3 = G2(
+                            GroupInitializer(cluster.Vat0.Partition, cluster.Vat1.Partition, cluster.HealthyVatCount,
+                                cluster.InfectedVatCount, healthyfile, infectedfile, OutType.Vat, outList),
+                            cluster.Vat0.Partition, cluster.Vat1.Partition, OutType.Vat);
                         dataOut = d1.Union(d2).Where(x => !d3.Contains(x)).OrderBy(x => x.Bacteria).Distinct().ToList();
                         break;
 
                     case ClusterType.G14:
-                        d1 = G1(GroupInitializer(clusterVat.Vat0.Partition,
-                            clusterVat.Vat1.Partition, clusterVat.HealthyCount, clusterVat.InfectedCount, healthyfile,
+                        d1 = G1(GroupInitializer(cluster.Vat0.Partition,
+                            cluster.Vat1.Partition, cluster.HealthyVatCount, cluster.InfectedVatCount, healthyfile,
                             infectedfile, OutType.Vat, outList));
-                        d2 = G2(clusterTen.Ten0.Partition, clusterTen.Ten1.Partition,
-                            OutType.Ten);
-                        d3 = G2(clusterInt.Int0.Partition, clusterInt.Int1.Partition,
-                            OutType.Int);
+                        d2 = G2(
+                            GroupInitializer(cluster.Ten0.Partition, cluster.Ten1.Partition, cluster.HealthyTenCount,
+                                cluster.InfectedTenCount, healthyfile, infectedfile, OutType.Ten, outList),
+                            cluster.Ten0.Partition, cluster.Ten1.Partition, OutType.Ten);
+                        d3 = G2(
+                            GroupInitializer(cluster.Int0.Partition, cluster.Int1.Partition, cluster.HealthyIntCount,
+                                cluster.InfectedIntCount, healthyfile, infectedfile, OutType.Int, outList),
+                            cluster.Int0.Partition, cluster.Int1.Partition, OutType.Int);
                         dataOut = d1.Union(d2).Where(x => !d3.Contains(x)).OrderBy(x => x.Bacteria).Distinct().ToList();
                         break;
 
                     case ClusterType.G15:
-                        d1 = G1(GroupInitializer(clusterTen.Ten0.Partition,
-                            clusterTen.Ten0.Partition, clusterTen.HealthyCount, clusterTen.InfectedCount, healthyfile,
+                        d1 = G1(GroupInitializer(cluster.Ten0.Partition,
+                            cluster.Ten0.Partition, cluster.HealthyTenCount, cluster.InfectedTenCount, healthyfile,
                             infectedfile, OutType.Ten, outList));
-                        d2 = G2(clusterTen.Ten0.Partition, clusterTen.Ten1.Partition,
-                            OutType.Ten);
-                        d3 = G2(clusterInt.Int0.Partition, clusterInt.Int1.Partition,
-                            OutType.Int);
+                        d2 = G2(
+                            GroupInitializer(cluster.Ten0.Partition, cluster.Ten1.Partition, cluster.HealthyTenCount,
+                                cluster.InfectedTenCount, healthyfile, infectedfile, OutType.Ten, outList),
+                            cluster.Ten0.Partition, cluster.Ten1.Partition, OutType.Ten);
+                        d3 = G2(
+                            GroupInitializer(cluster.Int0.Partition, cluster.Int1.Partition, cluster.HealthyIntCount,
+                                cluster.InfectedIntCount, healthyfile, infectedfile, OutType.Int, outList),
+                            cluster.Int0.Partition, cluster.Int1.Partition, OutType.Int);
                         dataOut = d1.Union(d2).Where(x => !d3.Contains(x)).OrderBy(x => x.Bacteria).Distinct().ToList();
                         break;
 
                     case ClusterType.G16:
-                        d1 = G1(GroupInitializer(clusterInt.Int0.Partition,
-                            clusterInt.Int0.Partition, clusterInt.HealthyCount, clusterInt.InfectedCount, healthyfile,
+                        d1 = G1(GroupInitializer(cluster.Int0.Partition,
+                            cluster.Int0.Partition, cluster.HealthyIntCount, cluster.InfectedIntCount, healthyfile,
                             infectedfile, OutType.Int, outList));
-                        d2 = G2(clusterInt.Int0.Partition, clusterInt.Int1.Partition,
-                            OutType.Int);
-                        d3 = G2(clusterVat.Vat0.Partition, clusterVat.Vat1.Partition,
-                            OutType.Vat);
+                        d2 = G2(
+                            GroupInitializer(cluster.Int0.Partition, cluster.Int1.Partition, cluster.HealthyIntCount,
+                                cluster.InfectedIntCount, healthyfile, infectedfile, OutType.Int, outList),
+                            cluster.Int0.Partition, cluster.Int1.Partition, OutType.Int);
+                        d3 = G2(
+                            GroupInitializer(cluster.Vat0.Partition, cluster.Vat1.Partition, cluster.HealthyVatCount,
+                                cluster.InfectedVatCount, healthyfile, infectedfile, OutType.Vat, outList),
+                            cluster.Vat0.Partition, cluster.Vat1.Partition, OutType.Vat);
                         dataOut = d1.Union(d2).Where(x => !d3.Contains(x)).OrderBy(x => x.Bacteria).Distinct().ToList();
                         break;
 
                     case ClusterType.G17:
-                        d1 = G1(GroupInitializer(clusterVat.Vat0.Partition,
-                            clusterVat.Vat1.Partition, clusterVat.HealthyCount, clusterVat.InfectedCount, healthyfile,
+                        d1 = G1(GroupInitializer(cluster.Vat0.Partition,
+                            cluster.Vat1.Partition, cluster.HealthyVatCount, cluster.InfectedVatCount, healthyfile,
                             infectedfile, OutType.Vat, outList));
-                        d2 = G3(clusterInt.Int0.Partition, clusterInt.Int1.Partition, OutType.Int);
-                        d3 = G3(clusterVat.Vat0.Partition, clusterVat.Vat1.Partition, OutType.Vat);
+                        d2 = G3(
+                            GroupInitializer(cluster.Int0.Partition, cluster.Int1.Partition,
+                                cluster.HealthyIntCount, cluster.InfectedIntCount, healthyfile, infectedfile,
+                                OutType.Int, outList), cluster.Int0.Partition, cluster.Int1.Partition,
+                            OutType.Int);
+                        d3 = G3(
+                            GroupInitializer(cluster.Vat0.Partition, cluster.Vat1.Partition,
+                                cluster.HealthyVatCount, cluster.InfectedVatCount, healthyfile, infectedfile,
+                                OutType.Vat, outList), cluster.Vat0.Partition, cluster.Vat1.Partition,
+                            OutType.Vat);
                         dataOut = d1.Union(d2).Where(x => !d3.Contains(x)).OrderBy(x => x.Bacteria).Distinct().ToList();
                         break;
 
                     case ClusterType.G18:
-                        d1 = G1(GroupInitializer(clusterInt.Int0.Partition,
-                            clusterInt.Int1.Partition, clusterInt.HealthyCount, clusterInt.InfectedCount, healthyfile,
+                        d1 = G1(GroupInitializer(cluster.Int0.Partition,
+                            cluster.Int1.Partition, cluster.HealthyIntCount, cluster.InfectedIntCount, healthyfile,
                             infectedfile, OutType.Int, outList));
-                        d2 = G3(clusterInt.Int0.Partition, clusterInt.Int1.Partition, OutType.Int);
-                        d3 = G3(clusterVat.Vat0.Partition, clusterVat.Vat1.Partition, OutType.Vat);
+                        d2 = G3(
+                            GroupInitializer(cluster.Int0.Partition, cluster.Int1.Partition,
+                                cluster.HealthyIntCount, cluster.InfectedIntCount, healthyfile, infectedfile,
+                                OutType.Int, outList), cluster.Int0.Partition, cluster.Int1.Partition,
+                            OutType.Int);
+                        d3 = G3(
+                            GroupInitializer(cluster.Vat0.Partition, cluster.Vat1.Partition,
+                                cluster.HealthyVatCount, cluster.InfectedVatCount, healthyfile, infectedfile,
+                                OutType.Vat, outList), cluster.Vat0.Partition, cluster.Vat1.Partition,
+                            OutType.Vat);
                         dataOut = d1.Union(d2).Where(x => !d3.Contains(x)).OrderBy(x => x.Bacteria).Distinct().ToList();
                         break;
 
                     case ClusterType.G19:
-                        d1 = G1(GroupInitializer(clusterTen.Ten0.Partition,
-                            clusterTen.Ten1.Partition, clusterTen.HealthyCount, clusterTen.InfectedCount, healthyfile,
+                        d1 = G1(GroupInitializer(cluster.Ten0.Partition,
+                            cluster.Ten1.Partition, cluster.HealthyTenCount, cluster.InfectedTenCount, healthyfile,
                             infectedfile, OutType.Ten, outList));
-                        d2 = G3(clusterInt.Int0.Partition, clusterInt.Int1.Partition, OutType.Int);
-                        d3 = G3(clusterVat.Vat0.Partition, clusterVat.Vat1.Partition, OutType.Vat);
+                        d2 = G3(
+                            GroupInitializer(cluster.Int0.Partition, cluster.Int1.Partition,
+                                cluster.HealthyIntCount, cluster.InfectedIntCount, healthyfile, infectedfile,
+                                OutType.Int, outList), cluster.Int0.Partition, cluster.Int1.Partition,
+                            OutType.Int);
+                        d3 = G3(
+                            GroupInitializer(cluster.Vat0.Partition, cluster.Vat1.Partition,
+                                cluster.HealthyVatCount, cluster.InfectedVatCount, healthyfile, infectedfile,
+                                OutType.Vat, outList), cluster.Vat0.Partition, cluster.Vat1.Partition,
+                            OutType.Vat);
                         dataOut = d1.Union(d2).Where(x => !d3.Contains(x)).OrderBy(x => x.Bacteria).Distinct().ToList();
                         break;
 
                     case ClusterType.G20:
-                        d1 = G1(GroupInitializer(clusterTen.Ten0.Partition,
-                            clusterTen.Ten1.Partition, clusterTen.HealthyCount, clusterTen.InfectedCount, healthyfile,
+                        d1 = G1(GroupInitializer(cluster.Ten0.Partition,
+                            cluster.Ten1.Partition, cluster.HealthyTenCount, cluster.InfectedTenCount, healthyfile,
                             infectedfile, OutType.Ten, outList));
-                        d2 = G3(clusterInt.Int0.Partition, clusterInt.Int1.Partition, OutType.Int);
-                        d3 = G3(clusterVat.Vat0.Partition, clusterVat.Vat1.Partition, OutType.Vat);
+                        d2 = G3(
+                            GroupInitializer(cluster.Int0.Partition, cluster.Int1.Partition,
+                                cluster.HealthyIntCount, cluster.InfectedIntCount, healthyfile, infectedfile,
+                                OutType.Int, outList), cluster.Int0.Partition, cluster.Int1.Partition,
+                            OutType.Int);
+                        d3 = G3(
+                            GroupInitializer(cluster.Vat0.Partition, cluster.Vat1.Partition,
+                                cluster.HealthyVatCount, cluster.InfectedVatCount, healthyfile, infectedfile,
+                                OutType.Vat, outList), cluster.Vat0.Partition, cluster.Vat1.Partition,
+                            OutType.Vat);
                         dataOut = d1.Union(d2).Where(x => !d3.Contains(x)).OrderBy(x => x.Bacteria).Distinct().ToList();
                         break;
 
                     case ClusterType.G21:
-                        d1 = G4(GroupInitializer(clusterVat.Vat0.Partition,
-                            clusterVat.Vat1.Partition, clusterVat.HealthyCount, clusterVat.InfectedCount, healthyfile,
+                        d1 = G4(GroupInitializer(cluster.Vat0.Partition,
+                            cluster.Vat1.Partition, cluster.HealthyVatCount, cluster.InfectedVatCount, healthyfile,
                             infectedfile, OutType.Vat, outList));
-                        d2 = G3(clusterInt.Int0.Partition, clusterInt.Int1.Partition, OutType.Int);
-                        d3 = G3(clusterVat.Vat0.Partition, clusterVat.Vat1.Partition, OutType.Vat);
+                        d2 = G3(
+                            GroupInitializer(cluster.Int0.Partition, cluster.Int1.Partition,
+                                cluster.HealthyIntCount, cluster.InfectedIntCount, healthyfile, infectedfile,
+                                OutType.Int, outList), cluster.Int0.Partition, cluster.Int1.Partition,
+                            OutType.Int);
+                        d3 = G3(
+                            GroupInitializer(cluster.Vat0.Partition, cluster.Vat1.Partition,
+                                cluster.HealthyVatCount, cluster.InfectedVatCount, healthyfile, infectedfile,
+                                OutType.Vat, outList), cluster.Vat0.Partition, cluster.Vat1.Partition,
+                            OutType.Vat);
                         dataOut = d1.Union(d2).Where(x => !d3.Contains(x)).OrderBy(x => x.Bacteria).Distinct().ToList();
                         break;
 
                     case ClusterType.G22:
-                        d1 = G4(GroupInitializer(clusterInt.Int0.Partition,
-                            clusterInt.Int1.Partition, clusterInt.HealthyCount, clusterInt.InfectedCount, healthyfile,
+                        d1 = G4(GroupInitializer(cluster.Int0.Partition,
+                            cluster.Int1.Partition, cluster.HealthyIntCount, cluster.InfectedIntCount, healthyfile,
                             infectedfile, OutType.Int, outList));
-                        d2 = G3(clusterInt.Int0.Partition, clusterInt.Int1.Partition, OutType.Int);
-                        d3 = G3(clusterVat.Vat0.Partition, clusterVat.Vat1.Partition, OutType.Vat);
+                        d2 = G3(
+                            GroupInitializer(cluster.Int0.Partition, cluster.Int1.Partition,
+                                cluster.HealthyIntCount, cluster.InfectedIntCount, healthyfile, infectedfile,
+                                OutType.Int, outList), cluster.Int0.Partition, cluster.Int1.Partition,
+                            OutType.Int);
+                        d3 = G3(
+                            GroupInitializer(cluster.Vat0.Partition, cluster.Vat1.Partition,
+                                cluster.HealthyVatCount, cluster.InfectedVatCount, healthyfile, infectedfile,
+                                OutType.Vat, outList), cluster.Vat0.Partition, cluster.Vat1.Partition,
+                            OutType.Vat);
                         dataOut = d1.Union(d2).Where(x => !d3.Contains(x)).OrderBy(x => x.Bacteria).Distinct().ToList();
                         break;
 
                     case ClusterType.G23:
-                        d1 = G4(GroupInitializer(clusterTen.Ten0.Partition,
-                            clusterTen.Ten1.Partition, clusterTen.HealthyCount, clusterTen.InfectedCount, healthyfile,
+                        d1 = G4(GroupInitializer(cluster.Ten0.Partition,
+                            cluster.Ten1.Partition, cluster.HealthyTenCount, cluster.InfectedTenCount, healthyfile,
                             infectedfile, OutType.Ten, outList));
-                        d2 = G3(clusterInt.Int0.Partition, clusterInt.Int1.Partition, OutType.Int);
-                        d3 = G3(clusterVat.Vat0.Partition, clusterVat.Vat1.Partition, OutType.Vat);
+                        d2 = G3(
+                            GroupInitializer(cluster.Int0.Partition, cluster.Int1.Partition,
+                                cluster.HealthyIntCount, cluster.InfectedIntCount, healthyfile, infectedfile,
+                                OutType.Int, outList), cluster.Int0.Partition, cluster.Int1.Partition,
+                            OutType.Int);
+                        d3 = G3(
+                            GroupInitializer(cluster.Vat0.Partition, cluster.Vat1.Partition,
+                                cluster.HealthyVatCount, cluster.InfectedVatCount, healthyfile, infectedfile,
+                                OutType.Vat, outList), cluster.Vat0.Partition, cluster.Vat1.Partition,
+                            OutType.Vat);
                         dataOut = d1.Union(d2).Where(x => !d3.Contains(x)).OrderBy(x => x.Bacteria).Distinct().ToList();
                         break;
 
                     case ClusterType.G24:
-                        d1 = G4(GroupInitializer(clusterTen.Ten0.Partition,
-                            clusterTen.Ten1.Partition, clusterTen.HealthyCount, clusterTen.InfectedCount, healthyfile,
+                        d1 = G4(GroupInitializer(cluster.Ten0.Partition,
+                            cluster.Ten1.Partition, cluster.HealthyTenCount, cluster.InfectedTenCount, healthyfile,
                             infectedfile, OutType.Ten, outList));
-                        d2 = G3(clusterTen.Ten0.Partition, clusterTen.Ten1.Partition, OutType.Ten);
-                        d3 = G3(clusterVat.Vat0.Partition, clusterVat.Vat1.Partition, OutType.Vat);
+                        d2 = G3(
+                            GroupInitializer(cluster.Ten0.Partition, cluster.Ten1.Partition,
+                                cluster.HealthyTenCount, cluster.InfectedTenCount, healthyfile, infectedfile,
+                                OutType.Ten, outList), cluster.Ten0.Partition, cluster.Ten1.Partition,
+                            OutType.Ten);
+                        d3 = G3(
+                            GroupInitializer(cluster.Vat0.Partition, cluster.Vat1.Partition, cluster.HealthyVatCount,
+                                cluster.InfectedVatCount, healthyfile, infectedfile, OutType.Vat, outList),
+                            cluster.Vat0.Partition, cluster.Vat1.Partition, OutType.Vat);
                         dataOut = d1.Union(d2).Where(x => !d3.Contains(x)).OrderBy(x => x.Bacteria).Distinct().ToList();
                         break;
 
                     case ClusterType.G25:
-                        d1 = G4(GroupInitializer(clusterVat.Vat0.Partition,
-                            clusterVat.Vat1.Partition, clusterVat.HealthyCount, clusterVat.InfectedCount, healthyfile,
+                        d1 = G4(GroupInitializer(cluster.Vat0.Partition,
+                            cluster.Vat1.Partition, cluster.HealthyVatCount, cluster.InfectedVatCount, healthyfile,
                             infectedfile, OutType.Vat, outList));
-                        d2 = G3(clusterTen.Ten0.Partition, clusterTen.Ten1.Partition, OutType.Ten);
-                        d3 = G3(clusterVat.Vat0.Partition, clusterVat.Vat1.Partition, OutType.Vat);
+                        d2 = G3(
+                            GroupInitializer(cluster.Ten0.Partition, cluster.Ten1.Partition, cluster.HealthyTenCount,
+                                cluster.InfectedTenCount, healthyfile, infectedfile, OutType.Ten, outList),
+                            cluster.Ten0.Partition, cluster.Ten1.Partition, OutType.Ten);
+                        d3 = G3(
+                            GroupInitializer(cluster.Vat0.Partition, cluster.Vat1.Partition, cluster.HealthyVatCount,
+                                cluster.InfectedVatCount, healthyfile, infectedfile, OutType.Vat, outList),
+                            cluster.Vat0.Partition, cluster.Vat1.Partition, OutType.Vat);
                         dataOut = d1.Union(d2).Where(x => !d3.Contains(x)).OrderBy(x => x.Bacteria).Distinct().ToList();
                         break;
                 }
@@ -334,49 +429,40 @@ namespace debugNetData
             return outList;
         }
 
-        private static GeneralCluster ReturnClusterAndPartition(OutType type, LightWeightGraph healthy,
+        private static GeneralCluster ReturnClusterAndPartition(LightWeightGraph healthy,
             LightWeightGraph infected, int healthyClusters, int infectedClusters, String healthyfile,
             String infectedfile)
         {
             GeneralCluster cluster = new GeneralCluster();
-            switch (type)
-            {
-                case OutType.Int:
-                    cluster.Int0.Cluster =
-                        new HIntegrityClust(healthy, healthyClusters + 1, false, 1, 0, false, false);
-                    cluster.Int0.Partition = cluster.Int0.Cluster.GetPartition();
-                    cluster.Int0.Partition.SavePartition(healthyfile + "_INT.cluster", healthyfile + ".graph");
-                    cluster.Int1.Cluster =
-                        new HIntegrityClust(infected, infectedClusters + 1, false, 1, 0, false, false);
-                    cluster.Int1.Partition = cluster.Int1.Cluster.GetPartition();
-                    cluster.Int1.Partition.SavePartition(infectedfile + "_INT.cluster", infectedfile + ".graph");
-                    cluster.HealthyCount = new int[cluster.Int0.Partition.DataCount];
-                    cluster.InfectedCount = new int[cluster.Int1.Partition.DataCount];
-                    break;
-                case OutType.Ten:
-                    cluster.Ten0.Cluster =
-                        new HTenacityClust(healthy, healthyClusters + 1, false, 1, 0, false, false);
-                    cluster.Ten0.Partition = cluster.Ten0.Cluster.GetPartition();
-                    cluster.Ten0.Partition.SavePartition(healthyfile + "_TEN.cluster", healthyfile + ".graph");
-                    cluster.Ten1.Cluster =
-                        new HTenacityClust(infected, infectedClusters + 1, false, 1, 0, false, false);
-                    cluster.Ten1.Partition = cluster.Ten1.Cluster.GetPartition();
-                    cluster.Ten1.Partition.SavePartition(infectedfile + "_TEN.cluster", infectedfile + ".graph");
-                    cluster.HealthyCount = new int[cluster.Ten0.Partition.DataCount];
-                    cluster.InfectedCount = new int[cluster.Ten1.Partition.DataCount];
-                    break;
-                case OutType.Vat:
-                    cluster.Vat0.Cluster = new HVATClust(healthy, healthyClusters + 1, false, 1, 0, false, false);
-                    cluster.Vat0.Partition = cluster.Vat0.Cluster.GetPartition();
-                    cluster.Vat0.Partition.SavePartition(healthyfile + "_VAT.cluster", healthyfile + ".graph");
-                    cluster.Vat1.Cluster =
-                        new HVATClust(infected, infectedClusters + 1, false, 1, 0, false, false);
-                    cluster.Vat1.Partition = cluster.Vat1.Cluster.GetPartition();
-                    cluster.Vat1.Partition.SavePartition(infectedfile + "_VAT.cluster", infectedfile + ".graph");
-                    cluster.HealthyCount = new int[cluster.Vat0.Partition.DataCount];
-                    cluster.InfectedCount = new int[cluster.Vat1.Partition.DataCount];
-                    break;
-            }
+            cluster.Int0.Cluster =
+                new HIntegrityClust(healthy, healthyClusters + 1, false, 1, 0, false, false);
+            cluster.Int0.Partition = cluster.Int0.Cluster.GetPartition();
+            cluster.Int0.Partition.SavePartition(healthyfile + "_INT.cluster", healthyfile + ".graph");
+            cluster.Int1.Cluster =
+                new HIntegrityClust(infected, infectedClusters + 1, false, 1, 0, false, false);
+            cluster.Int1.Partition = cluster.Int1.Cluster.GetPartition();
+            cluster.Int1.Partition.SavePartition(infectedfile + "_INT.cluster", infectedfile + ".graph");
+            cluster.HealthyIntCount = new int[cluster.Int0.Partition.DataCount];
+            cluster.InfectedIntCount = new int[cluster.Int1.Partition.DataCount];
+            cluster.Ten0.Cluster =
+                new HTenacityClust(healthy, healthyClusters + 1, false, 1, 0, false, false);
+            cluster.Ten0.Partition = cluster.Ten0.Cluster.GetPartition();
+            cluster.Ten0.Partition.SavePartition(healthyfile + "_TEN.cluster", healthyfile + ".graph");
+            cluster.Ten1.Cluster =
+                new HTenacityClust(infected, infectedClusters + 1, false, 1, 0, false, false);
+            cluster.Ten1.Partition = cluster.Ten1.Cluster.GetPartition();
+            cluster.Ten1.Partition.SavePartition(infectedfile + "_TEN.cluster", infectedfile + ".graph");
+            cluster.HealthyTenCount = new int[cluster.Ten0.Partition.DataCount];
+            cluster.InfectedTenCount = new int[cluster.Ten1.Partition.DataCount];
+            cluster.Vat0.Cluster = new HVATClust(healthy, healthyClusters + 1, false, 1, 0, false, false);
+            cluster.Vat0.Partition = cluster.Vat0.Cluster.GetPartition();
+            cluster.Vat0.Partition.SavePartition(healthyfile + "_VAT.cluster", healthyfile + ".graph");
+            cluster.Vat1.Cluster =
+                new HVATClust(infected, infectedClusters + 1, false, 1, 0, false, false);
+            cluster.Vat1.Partition = cluster.Vat1.Cluster.GetPartition();
+            cluster.Vat1.Partition.SavePartition(infectedfile + "_VAT.cluster", infectedfile + ".graph");
+            cluster.HealthyVatCount = new int[cluster.Vat0.Partition.DataCount];
+            cluster.InfectedVatCount = new int[cluster.Vat1.Partition.DataCount];
 
             return cluster;
         }
@@ -417,7 +503,6 @@ namespace debugNetData
                 dataOut.Add(outObj);
             }
 
-            // System.Console.WriteLine( dataOut[i].bacteria );
             using (StreamWriter sw = new StreamWriter(fileName + fileEnd))
 
                 for (int i = 0; i < dataOut.Count(); i++)
@@ -451,7 +536,8 @@ namespace debugNetData
         /// <summary>
         /// G2 finds all unique maching clusters
         /// </summary>
-        public static List<DataOutStruct> G2(Partition healthyPartition, Partition infectedPartition, OutType type)
+        public static List<DataOutStruct> G2(List<List<DataOutStruct>> initList, Partition healthyPartition,
+            Partition infectedPartition, OutType type)
         {
             List<DataOutStruct> healthy = new List<DataOutStruct>();
             List<DataOutStruct> infected = new List<DataOutStruct>();
@@ -480,7 +566,10 @@ namespace debugNetData
                     infected.Add(singleNode);
                 }
             }
-
+            List<String> commonHealthy = healthy.Select(x => x.Bacteria).Intersect(initList[1].Select(i => i.Bacteria)).ToList();
+            List<String> commonInfected = infected.Select(x => x.Bacteria).Intersect(initList[0].Select(i => i.Bacteria)).ToList();
+            infected = infected.Where(x => commonInfected.Any(n => n.Equals(x.Bacteria))).ToList();
+            healthy = healthy.Where(x => commonHealthy.Any(n => n.Equals(x.Bacteria))).ToList();
             dataOut = healthy.Intersect(infected).OrderBy(x => x.Bacteria).Distinct().ToList();
             return dataOut;
         }
@@ -489,7 +578,8 @@ namespace debugNetData
         /// <summary>
         /// G3 finds all unique singular group numbers that are  
         /// </summary>
-        public static List<DataOutStruct> G3(Partition healthyPartition, Partition infectedPartition, OutType type)
+        public static List<DataOutStruct> G3(List<List<DataOutStruct>> initList, Partition healthyPartition,
+            Partition infectedPartition, OutType type)
         {
             List<DataOutStruct> healthy = new List<DataOutStruct>();
             List<DataOutStruct> infected = new List<DataOutStruct>();
@@ -520,9 +610,14 @@ namespace debugNetData
                 }
             }
 
-            infectedList = infected.Except(healthy).Distinct().ToList();
-            healthyList = healthy.Except(infected).Distinct().ToList();
-            //List<DataOutStruct> outList = healthyList.Union(infectedList).Distinct().OrderBy(x => x.Bacteria).ToList();
+            List<String> commonHealthy =
+                healthy.Select(x => x.Bacteria).Intersect(initList[1].Select(i => i.Bacteria)).ToList();
+            List<String> commonInfected =
+                infected.Select(x => x.Bacteria).Intersect(initList[0].Select(i => i.Bacteria)).ToList();
+            infectedList = infected.Except(healthy).Distinct().Where(x => commonInfected.Any(n => n.Equals(x.Bacteria)))
+                .ToList();
+            healthyList = healthy.Except(infected).Distinct().Where(x => commonHealthy.Any(n => n.Equals(x.Bacteria)))
+                .ToList();
             List<DataOutStruct> outList = healthyList.Union(infectedList).Distinct().OrderBy(x => x.Bacteria).ToList();
             return outList;
         }
@@ -568,9 +663,11 @@ namespace debugNetData
                     }
                 }
             }
-
-            infectedList = infectedList.Distinct().ToList();
-            healthyList = healthyList.Distinct().ToList();
+            
+            List<String> commonHealthy = healthyList.Select(x => x.Bacteria).Intersect(dataSet[1].Select(i => i.Bacteria)).ToList();
+            List<String> commonInfected = infectedList.Select(x => x.Bacteria).Intersect(dataSet[0].Select(i => i.Bacteria)).ToList();
+            infectedList = infectedList.Distinct().Where(x => commonInfected.Any(n => n.Equals(x.Bacteria))).ToList();
+            healthyList = healthyList.Distinct().Where(x => commonHealthy.Any(n => n.Equals(x.Bacteria))).ToList().ToList();
             List<DataOutStruct> outList = healthyList.Union(infectedList).Distinct().OrderBy(x => x.Bacteria).ToList();
             return outList;
         }
