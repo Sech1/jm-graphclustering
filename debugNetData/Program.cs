@@ -35,8 +35,20 @@ namespace debugNetData
 
 
             //convert from gml to graph
-            String healthyfile = $"{workingDir}//Data//{args[0]}";
-            String infectedfile = $"{workingDir}//Data//{args[1]}";
+            
+            String healthyfile;
+            String infectedfile;
+
+            try
+            {
+                healthyfile = args[0];
+                infectedfile = args[1];
+            }
+            catch (Exception DirectoryNotFoundException)
+            {
+                healthyfile = Path.GetFileName(args[0]);
+                infectedfile = Path.GetFileName(args[1]);
+            }
 
             LightWeightGraph healthy = LightWeightGraph.GetGraphFromGML($"{healthyfile}");
             LightWeightGraph infected = LightWeightGraph.GetGraphFromGML($"{infectedfile}");
