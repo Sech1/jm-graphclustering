@@ -12,3 +12,12 @@ C:\Users\John\Dropbox\GraphClustering3\NetMining\bin\Release\MathNet.Numerics.xm
 C:\Users\John\Dropbox\GraphClustering3\NetMining\obj\Release\NetMining.csprojResolveAssemblyReference.cache
 C:\Users\John\Dropbox\GraphClustering3\NetMining\obj\Release\NetMining.dll
 C:\Users\John\Dropbox\GraphClustering3\NetMining\obj\Release\NetMining.pdb
+C:\Users\jburke\Desktop\jm-graphclustering\NetMining\bin\Release\NetMining.dll
+C:\Users\jburke\Desktop\jm-graphclustering\NetMining\bin\Release\NetMining.pdb
+C:\Users\jburke\Desktop\jm-graphclustering\NetMining\bin\Release\MathNet.Numerics.dll
+C:\Users\jburke\Desktop\jm-graphclustering\NetMining\bin\Release\MathNet.Numerics.xml
+C:\Users\jburke\Desktop\jm-graphclustering\NetMining\obj\Release\NetMining.csprojAssemblyReference.cache
+C:\Users\jburke\Desktop\jm-graphclustering\NetMining\obj\Release\NetMining.csproj.CoreCompileInputs.cache
+C:\Users\jburke\Desktop\jm-graphclustering\NetMining\obj\Release\NetMining.csproj.CopyComplete
+C:\Users\jburke\Desktop\jm-graphclustering\NetMining\obj\Release\NetMining.dll
+C:\Users\jburke\Desktop\jm-graphclustering\NetMining\obj\Release\NetMining.pdb

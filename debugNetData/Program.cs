@@ -12,19 +12,12 @@ namespace debugNetData
     {
         static void Main(string[] args)
         {
-            String workingDir = Directory.GetCurrentDirectory();
-            String datapath = workingDir + "/Data";
-            if (!Directory.Exists(datapath))
-            {
-                Directory.CreateDirectory(datapath);
-                Console.WriteLine("Please move <healthyfile> and/or <infectedfile> to: " + datapath);
-                Environment.Exit(0);
-            }
 
-            if (args.Length == 0)
+
+            if (args.Length != 4)
             {
                 Console.WriteLine(
-                    "Usage: Program.cs <Healthyfile> <Infectedfile> <Group> ");
+                    "Usage: Program.cs <Healthyfile> <Infectedfile> <Outputfile> <Group> ");
                 Environment.Exit(0);
             }
 
@@ -34,60 +27,41 @@ namespace debugNetData
 
 
             //convert from gml to graph
-            
-            String healthyfile;
-            String infectedfile;
 
-            try
-            {
-                healthyfile = args[0];
-            }
-            catch (Exception e)
-            {
-                healthyfile = Path.GetFileName(args[0]);
-            }
-
-            try
-            {
-                infectedfile = args[1];
-            }
-            catch(Exception e)
-            {
-                infectedfile = Path.GetFileName(args[1]);
-            }
-
-            LightWeightGraph healthy = LightWeightGraph.GetGraphFromGML($"{healthyfile}");
-            LightWeightGraph infected = LightWeightGraph.GetGraphFromGML($"{infectedfile}");
-            healthyfile = healthyfile.Split('.')[0];
-            infectedfile = infectedfile.Split('.')[0];
-
+            String healthyfile = args[0];
+            String infectedfile = args[1];
+            String datapath = args[2];
 
             if (healthyfile.Contains("/"))
             {
                 healthyfile = healthyfile.Split('/').Last();
-                healthyfile = datapath + "/" + healthyfile;
             }
             if (healthyfile.Contains("\\"))
             {
                 healthyfile = healthyfile.Split('\\').Last();
-                healthyfile = datapath + "\\" + healthyfile;
             }
 
             if (infectedfile.Contains("/"))
             {
                 infectedfile = infectedfile.Split('/').Last();
-                infectedfile = datapath + "/" + infectedfile;
             }
             if (infectedfile.Contains("\\"))
             {
                 infectedfile = infectedfile.Split('\\').Last();
-                infectedfile = datapath + "\\" + infectedfile;
             }
 
-            healthy.SaveGraph(healthyfile + ".graph");
-            infected.SaveGraph(infectedfile + ".graph");
+            if (datapath.Last() == '\\' || datapath.Last() == '/')
+            {
+                datapath.Remove(datapath.Last());
+            }
+            LightWeightGraph healthy = LightWeightGraph.GetGraphFromGML(healthyfile);
+            LightWeightGraph infected = LightWeightGraph.GetGraphFromGML(infectedfile);
+            healthyfile = healthyfile.Split('.')[0];
+            infectedfile = infectedfile.Split('.')[0];
+            healthy.SaveGraph(datapath + "/" + healthyfile + ".graph");
+            infected.SaveGraph(datapath + "/" + infectedfile + ".graph");
             // Makes a list of what the nodes reference
-            using (StreamWriter sw = new StreamWriter(healthyfile + ".txt", true))
+            using (StreamWriter sw = new StreamWriter(datapath + "/" + healthyfile + ".txt", true))
             {
                 for (int i = 0; i < healthy.Nodes.Length; i++)
                 {
@@ -95,7 +69,7 @@ namespace debugNetData
                 }
             }
 
-            using (StreamWriter sw = new StreamWriter(infectedfile + ".txt", true))
+            using (StreamWriter sw = new StreamWriter(datapath + "/" + infectedfile + ".txt", true))
             {
                 for (int i = 0; i < infected.Nodes.Length; i++)
                 {
@@ -119,11 +93,11 @@ namespace debugNetData
 
             // This sees if the input cluster type can be parsed as the Enum, and if so 
             // Uses a switch statement to decide which clustering to run.
-            if (args.Length == 3)
+            if (args.Length == 4)
             {
-                List<DataOutStruct> outData = ConstructList(args[2], healthy, infected, healthyfile, infectedfile,
+                List<DataOutStruct> outData = ConstructList(args[3], healthy, infected, datapath + "/" + healthyfile, datapath + "/" + infectedfile,
                     healthyClusters, infectedClusters);
-                using (StreamWriter sw = new StreamWriter(datapath + "/" + args[2] + ".csv"))
+                using (StreamWriter sw = new StreamWriter(datapath + "/" + args[3] + ".csv"))
                 {
                     for (int i = 0; i < outData.Count(); i++)
                         sw.WriteLine(outData[i].Bacteria + ", " + outData[i].GroupNum);
