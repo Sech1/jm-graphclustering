@@ -55,36 +55,9 @@ namespace debugNetData
                 datapath.Remove(datapath.Last());
             }
             LightWeightGraph healthy = LightWeightGraph.GetGraphFromGML(healthyfile);
-
-            Console.WriteLine("here");
             LightWeightGraph infected = LightWeightGraph.GetGraphFromGML(infectedfile);
-            Console.WriteLine("here");
             healthyfile = healthyfile.Split('.')[0];
             infectedfile = infectedfile.Split('.')[0];
-
-
-            if (healthyfile.Contains("/"))
-            {
-                healthyfile = healthyfile.Split('/').Last();
-                healthyfile = datapath + "/" + healthyfile;
-            }
-            if (healthyfile.Contains("\\"))
-            {
-                healthyfile = healthyfile.Split('\\').Last();
-                healthyfile = datapath + "\\" + healthyfile;
-            }
-
-            if (infectedfile.Contains("/"))
-            {
-                infectedfile = infectedfile.Split('/').Last();
-                infectedfile = datapath + "/" + infectedfile;
-            }
-            if (infectedfile.Contains("\\"))
-            {
-                infectedfile = infectedfile.Split('\\').Last();
-                infectedfile = datapath + "\\" + infectedfile;
-            }
-            
             healthy.SaveGraph(datapath + "/" + healthyfile + ".graph");
             infected.SaveGraph(datapath + "/" + infectedfile + ".graph");
             // Makes a list of what the nodes reference
