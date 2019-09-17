@@ -30,38 +30,52 @@ namespace debugNetData
 
             String healthyfile = args[0];
             String infectedfile = args[1];
-            String datapath = args[2];
+
+            String healthyFileName = "";
+            String infectedFileName = "";
+
+            String workingDir = Directory.GetCurrentDirectory();
+            String datapath = workingDir + "/Data";
+
+            if (!Directory.Exists(datapath))
+            {
+                Directory.CreateDirectory(datapath);
+            }
+            
+            String outPath = args[2];
+            if (outPath.Contains('\\'))
+            {
+                outPath = outPath.Replace('\\', '/');
+            }
+            if (outPath.Split('/').Length == 1)
+            {
+                outPath = $"{workingDir}/{outPath}";
+            }
 
             if (healthyfile.Contains("/"))
             {
-                healthyfile = healthyfile.Split('/').Last();
+                healthyFileName = healthyfile.Split('/').Last().Split('.').First();
             }
             if (healthyfile.Contains("\\"))
             {
-                healthyfile = healthyfile.Split('\\').Last();
+                healthyFileName = healthyfile.Split('\\').Last().Split('.').First();
             }
 
             if (infectedfile.Contains("/"))
             {
-                infectedfile = infectedfile.Split('/').Last();
+                infectedFileName = infectedfile.Split('/').Last().Split('.').First();
             }
             if (infectedfile.Contains("\\"))
             {
-                infectedfile = infectedfile.Split('\\').Last();
+                infectedFileName = infectedfile.Split('\\').Last().Split('.').First();
             }
-
-            if (datapath.Last() == '\\' || datapath.Last() == '/')
-            {
-                datapath.Remove(datapath.Last());
-            }
+            
             LightWeightGraph healthy = LightWeightGraph.GetGraphFromGML(healthyfile);
             LightWeightGraph infected = LightWeightGraph.GetGraphFromGML(infectedfile);
-            healthyfile = healthyfile.Split('.')[0];
-            infectedfile = infectedfile.Split('.')[0];
-            healthy.SaveGraph(datapath + "/" + healthyfile + ".graph");
-            infected.SaveGraph(datapath + "/" + infectedfile + ".graph");
+            healthy.SaveGraph($"{datapath}/{healthyFileName}.graph");
+            infected.SaveGraph($"{datapath}/{infectedFileName}.graph");
             // Makes a list of what the nodes reference
-            using (StreamWriter sw = new StreamWriter(datapath + "/" + healthyfile + ".txt", true))
+            using (StreamWriter sw = new StreamWriter($"{datapath}/{healthyFileName}.txt", true))
             {
                 for (int i = 0; i < healthy.Nodes.Length; i++)
                 {
@@ -69,7 +83,7 @@ namespace debugNetData
                 }
             }
 
-            using (StreamWriter sw = new StreamWriter(datapath + "/" + infectedfile + ".txt", true))
+            using (StreamWriter sw = new StreamWriter($"{datapath}/{healthyFileName}.txt", true))
             {
                 for (int i = 0; i < infected.Nodes.Length; i++)
                 {
@@ -95,9 +109,9 @@ namespace debugNetData
             // Uses a switch statement to decide which clustering to run.
             if (args.Length == 4)
             {
-                List<DataOutStruct> outData = ConstructList(args[3], healthy, infected, datapath + "/" + healthyfile, datapath + "/" + infectedfile,
+                List<DataOutStruct> outData = ConstructList(args[3], healthy, infected, healthyFileName, infectedFileName,
                     healthyClusters, infectedClusters);
-                using (StreamWriter sw = new StreamWriter(datapath + "/" + args[3] + ".csv"))
+                using (StreamWriter sw = new StreamWriter(outPath))
                 {
                     for (int i = 0; i < outData.Count(); i++)
                         sw.WriteLine(outData[i].Bacteria + ", " + outData[i].GroupNum);
