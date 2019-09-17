@@ -457,34 +457,35 @@ namespace debugNetData
             LightWeightGraph infected, int healthyClusters, int infectedClusters, String healthyfile,
             String infectedfile)
         {
+            String workingDir = Directory.GetCurrentDirectory();
             GeneralCluster cluster = new GeneralCluster();
             cluster.Int0.Cluster =
                 new HIntegrityClust(healthy, healthyClusters + 1, false, 1, 0, false, false);
             cluster.Int0.Partition = cluster.Int0.Cluster.GetPartition();
-            cluster.Int0.Partition.SavePartition(healthyfile + "_INT.cluster", healthyfile + ".graph");
+            cluster.Int0.Partition.SavePartition($"{workingDir}/Data/{healthyfile}_INT.cluster", $"{workingDir}/{healthyfile}.graph");
             cluster.Int1.Cluster =
                 new HIntegrityClust(infected, infectedClusters + 1, false, 1, 0, false, false);
             cluster.Int1.Partition = cluster.Int1.Cluster.GetPartition();
-            cluster.Int1.Partition.SavePartition(infectedfile + "_INT.cluster", infectedfile + ".graph");
+            cluster.Int1.Partition.SavePartition($"{workingDir}/Data/{infectedfile}_INT.cluster", $"{workingDir}/{infectedfile}.graph");
             cluster.HealthyIntCount = new int[cluster.Int0.Partition.DataCount];
             cluster.InfectedIntCount = new int[cluster.Int1.Partition.DataCount];
             cluster.Ten0.Cluster =
                 new HTenacityClust(healthy, healthyClusters + 1, false, 1, 0, false, false);
             cluster.Ten0.Partition = cluster.Ten0.Cluster.GetPartition();
-            cluster.Ten0.Partition.SavePartition(healthyfile + "_TEN.cluster", healthyfile + ".graph");
+            cluster.Ten0.Partition.SavePartition($"{workingDir}/Data/{healthyfile}_TEN.cluster", $"{workingDir}/{healthyfile}.graph");
             cluster.Ten1.Cluster =
                 new HTenacityClust(infected, infectedClusters + 1, false, 1, 0, false, false);
             cluster.Ten1.Partition = cluster.Ten1.Cluster.GetPartition();
-            cluster.Ten1.Partition.SavePartition(infectedfile + "_TEN.cluster", infectedfile + ".graph");
+            cluster.Ten1.Partition.SavePartition($"{workingDir}/Data/{infectedfile}_TEN.cluster", $"{workingDir}/{infectedfile}.graph");
             cluster.HealthyTenCount = new int[cluster.Ten0.Partition.DataCount];
             cluster.InfectedTenCount = new int[cluster.Ten1.Partition.DataCount];
             cluster.Vat0.Cluster = new HVATClust(healthy, healthyClusters + 1, false, 1, 0, false, false);
             cluster.Vat0.Partition = cluster.Vat0.Cluster.GetPartition();
-            cluster.Vat0.Partition.SavePartition(healthyfile + "_VAT.cluster", healthyfile + ".graph");
+            cluster.Vat0.Partition.SavePartition($"{workingDir}/Data/{infectedfile}_VAT.cluster", $"{workingDir}/{infectedfile}.graph");
             cluster.Vat1.Cluster =
                 new HVATClust(infected, infectedClusters + 1, false, 1, 0, false, false);
             cluster.Vat1.Partition = cluster.Vat1.Cluster.GetPartition();
-            cluster.Vat1.Partition.SavePartition(infectedfile + "_VAT.cluster", infectedfile + ".graph");
+            cluster.Vat1.Partition.SavePartition($"{workingDir}/Data/{infectedfile}_VAT.cluster", $"{workingDir}/{infectedfile}.graph");
             cluster.HealthyVatCount = new int[cluster.Vat0.Partition.DataCount];
             cluster.InfectedVatCount = new int[cluster.Vat1.Partition.DataCount];
 
@@ -526,8 +527,7 @@ namespace debugNetData
 
                 dataOut.Add(outObj);
             }
-
-            using (StreamWriter sw = new StreamWriter(fileName + fileEnd))
+            using (StreamWriter sw = new StreamWriter($"Data/{fileName}{fileEnd}"))
 
                 for (int i = 0; i < dataOut.Count(); i++)
                 {
