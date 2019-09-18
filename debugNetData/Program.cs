@@ -56,20 +56,36 @@ namespace debugNetData
             {
                 healthyFileName = healthyfile.Split('/').Last().Split('.').First();
             }
+            else
+            {
+                healthyFileName = healthyfile.Split('.').First();
+            }
             if (healthyfile.Contains("\\"))
             {
                 healthyFileName = healthyfile.Split('\\').Last().Split('.').First();
             }
-
+            else
+            {
+                healthyFileName = healthyfile.Split('.').First();
+            }
+            Console.WriteLine(healthyFileName);
             if (infectedfile.Contains("/"))
             {
                 infectedFileName = infectedfile.Split('/').Last().Split('.').First();
+            }
+            else
+            {
+                infectedFileName = infectedfile.Split('.').First();
             }
             if (infectedfile.Contains("\\"))
             {
                 infectedFileName = infectedfile.Split('\\').Last().Split('.').First();
             }
-            
+            else
+            {
+                infectedFileName = infectedfile.Split('.').First();
+            }
+
             LightWeightGraph healthy = LightWeightGraph.GetGraphFromGML(healthyfile);
             LightWeightGraph infected = LightWeightGraph.GetGraphFromGML(infectedfile);
             healthy.SaveGraph($"{datapath}/{healthyFileName}.graph");
