@@ -64,7 +64,7 @@ namespace debugNetData
             healthy.SaveGraph($"{datapath}/{healthyFileName}.graph");
             infected.SaveGraph($"{datapath}/{infectedFileName}.graph");
             // Makes a list of what the nodes reference
-            using (StreamWriter sw = new StreamWriter($"{datapath}/{healthyFileName}.tx", true))
+            using (StreamWriter sw = new StreamWriter($"{datapath}/{healthyFileName}.txt", true))
             {
                 for (int i = 0; i < healthy.Nodes.Length; i++)
                 {
