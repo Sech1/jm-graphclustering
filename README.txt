@@ -1,4 +1,4 @@
-Usage: debugNetData.exe <Healthyfile> <Infectedfile> <Group>
+Usage: debugNetData.exe <Healthyfile> <Infectedfile> <output> <Group>
 
 
 Groups:
@@ -9,17 +9,8 @@ G4 - G4 finds all bacteria with group number being "N/A" in one file but not the
 G13/G25 - finds combinations of G1-G4
 
 
-Output:
-data outputs to the Data file.
-C:\(Working Directory)\Data
-
-
 Example:
-debugNetData.exe C:\Users\Desktop\healthyfile.gml C:\Users\Desktop\infectedfile.gml G1V
-
-debugNetData.exe healthyfile.gml infectedfile.gml G1V
-
-debugNetData.exe healthyfile.gml C:\Users\Desktop\infectedfile.gml G1V
+debugNetData.exe C:\Users\admin\Desktop\healthyfile.gml C:\Users\admin\Desktop\infectedfile.gml C:\Users\admin\Desktop\output.txt G1v
 
 
 Repo:

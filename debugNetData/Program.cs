@@ -68,7 +68,7 @@ namespace debugNetData
             {
                 healthyFileName = healthyfile.Split('.').First();
             }
-            Console.WriteLine(healthyFileName);
+
             if (infectedfile.Contains("/"))
             {
                 infectedFileName = infectedfile.Split('/').Last().Split('.').First();
