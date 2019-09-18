@@ -28,25 +28,22 @@ namespace debugNetData
 
             //convert from gml to graph
 
-            String healthyfile = args[0];
-            String infectedfile = args[1];
+            String healthyfile = BackSlashRemover(args[0]);
+            String infectedfile = BackSlashRemover(args[1]);
 
             String healthyFileName = "";
             String infectedFileName = "";
 
             String workingDir = Directory.GetCurrentDirectory();
             String datapath = workingDir + "/Data";
-
+            datapath = BackSlashRemover(datapath);
+            
             if (!Directory.Exists(datapath))
             {
                 Directory.CreateDirectory(datapath);
             }
-            
-            String outPath = args[2];
-            if (outPath.Contains('\\'))
-            {
-                outPath = outPath.Replace('\\', '/');
-            }
+
+            String outPath = BackSlashRemover(args[2]);
             if (outPath.Split('/').Length == 1)
             {
                 outPath = $"{workingDir}/{outPath}";
@@ -56,34 +53,10 @@ namespace debugNetData
             {
                 healthyFileName = healthyfile.Split('/').Last().Split('.').First();
             }
-            else
-            {
-                healthyFileName = healthyfile.Split('.').First();
-            }
-            if (healthyfile.Contains("\\"))
-            {
-                healthyFileName = healthyfile.Split('\\').Last().Split('.').First();
-            }
-            else
-            {
-                healthyFileName = healthyfile.Split('.').First();
-            }
 
             if (infectedfile.Contains("/"))
             {
                 infectedFileName = infectedfile.Split('/').Last().Split('.').First();
-            }
-            else
-            {
-                infectedFileName = infectedfile.Split('.').First();
-            }
-            if (infectedfile.Contains("\\"))
-            {
-                infectedFileName = infectedfile.Split('\\').Last().Split('.').First();
-            }
-            else
-            {
-                infectedFileName = infectedfile.Split('.').First();
             }
 
             LightWeightGraph healthy = LightWeightGraph.GetGraphFromGML(healthyfile);
@@ -91,7 +64,7 @@ namespace debugNetData
             healthy.SaveGraph($"{datapath}/{healthyFileName}.graph");
             infected.SaveGraph($"{datapath}/{infectedFileName}.graph");
             // Makes a list of what the nodes reference
-            using (StreamWriter sw = new StreamWriter($"{datapath}/{healthyFileName}.txt", true))
+            using (StreamWriter sw = new StreamWriter($"{datapath}/{healthyFileName}.tx", true))
             {
                 for (int i = 0; i < healthy.Nodes.Length; i++)
                 {
@@ -99,7 +72,7 @@ namespace debugNetData
                 }
             }
 
-            using (StreamWriter sw = new StreamWriter($"{datapath}/{healthyFileName}.txt", true))
+            using (StreamWriter sw = new StreamWriter($"{datapath}/{infectedFileName}.txt", true))
             {
                 for (int i = 0; i < infected.Nodes.Length; i++)
                 {
@@ -127,10 +100,11 @@ namespace debugNetData
             {
                 List<DataOutStruct> outData = ConstructList(args[3], healthy, infected, healthyFileName, infectedFileName,
                     healthyClusters, infectedClusters);
+                outData = CombineOuts(infected, healthy, outData);
                 using (StreamWriter sw = new StreamWriter(outPath))
                 {
                     for (int i = 0; i < outData.Count(); i++)
-                        sw.WriteLine(outData[i].Bacteria + ", " + outData[i].GroupNum);
+                        sw.WriteLine($"{outData[i].Bacteria} {outData[i].GroupNum}");
                 }
             }
             else
@@ -141,6 +115,59 @@ namespace debugNetData
                     "Unhealthy data path(.gml)\n " +
                     "Desired Output Group(listed in Readme)\n");
             }
+        }
+
+        private static String BackSlashRemover(String path)
+        {
+            if (path.Contains('\\'))
+            {
+                path = path.Replace('\\', '/');
+            }
+
+            return path;
+        } 
+
+        private static List<DataOutStruct> CombineOuts(LightWeightGraph healthy, LightWeightGraph infected, List<DataOutStruct> outData)
+        {
+            List<DataOutStruct> finalOut = new List<DataOutStruct>();
+            List<DataOutStruct> healthyNodes = new List<DataOutStruct>();
+            List<DataOutStruct> infectedNodes = new List<DataOutStruct>();
+            foreach (var node in healthy.Nodes)
+            {
+                DataOutStruct singleNode = new DataOutStruct
+                {
+                    GroupNum = "0", Bacteria = node.sharedName, ClusterType = ""
+                };
+                healthyNodes.Add(singleNode);
+            }
+            foreach (var node in infected.Nodes)
+            {
+                DataOutStruct singleNode = new DataOutStruct
+                {
+                    GroupNum = "0", Bacteria = node.sharedName, ClusterType = ""
+                };
+                infectedNodes.Add(singleNode);
+            }
+            foreach (DataOutStruct bacteria in outData)
+            {
+                foreach (DataOutStruct healthyNode in healthyNodes)
+                {
+                    if (bacteria.Bacteria.Equals(healthyNode.Bacteria))
+                    {
+                        healthyNode.GroupNum = "1";
+                    }
+                }
+                foreach (DataOutStruct infectedNode in infectedNodes)
+                {
+                    if (bacteria.Bacteria.Equals(infectedNode.Bacteria))
+                    {
+                        infectedNode.GroupNum = "1";
+                    }   
+                }
+            }
+
+            finalOut = healthyNodes.Union(infectedNodes).Distinct().OrderByDescending(x => x.GroupNum).ThenBy(x => x.Bacteria).ToList();
+            return finalOut;
         }
 
         private static List<DataOutStruct> ConstructList(string args, LightWeightGraph healthy,
@@ -587,7 +614,7 @@ namespace debugNetData
             {
                 if (cluster.Points.Count == 1)
                 {
-                    DataOutStruct singleNode;
+                    DataOutStruct singleNode = new DataOutStruct();
                     singleNode.Bacteria = healthyPartition.Graph.Nodes[cluster.Points[0].Id].sharedName;
                     singleNode.ClusterType = type.ToString();
                     singleNode.GroupNum = "";
@@ -599,7 +626,7 @@ namespace debugNetData
             {
                 if (cluster.Points.Count == 1)
                 {
-                    DataOutStruct singleNode;
+                    DataOutStruct singleNode = new DataOutStruct();
                     singleNode.Bacteria = infectedPartition.Graph.Nodes[cluster.Points[0].Id].sharedName;
                     singleNode.ClusterType = type.ToString();
                     singleNode.GroupNum = "";
@@ -630,7 +657,7 @@ namespace debugNetData
             {
                 if (cluster.Points.Count == 1)
                 {
-                    DataOutStruct singleNode;
+                    DataOutStruct singleNode = new DataOutStruct();
                     singleNode.Bacteria = healthyPartition.Graph.Nodes[cluster.Points[0].Id].sharedName;
                     singleNode.ClusterType = type.ToString();
                     singleNode.GroupNum = "";
@@ -642,7 +669,7 @@ namespace debugNetData
             {
                 if (cluster.Points.Count == 1)
                 {
-                    DataOutStruct singleNode;
+                    DataOutStruct singleNode = new DataOutStruct();
                     singleNode.Bacteria = infectedPartition.Graph.Nodes[cluster.Points[0].Id].sharedName;
                     singleNode.ClusterType = type.ToString();
                     singleNode.GroupNum = "";

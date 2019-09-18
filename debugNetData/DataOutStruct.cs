@@ -38,11 +38,11 @@ namespace debugNetData
         G25 // G1V + (G3T/G3V)
     }
 
-    public struct DataOutStruct
+    public class DataOutStruct
     {
-        public string GroupNum;
-        public string Bacteria;
-        public string ClusterType;
+        public string GroupNum { get; set; }
+        public string Bacteria { get; set; }
+        public string ClusterType { get; set; }
 
         public override bool Equals(object obj)
         {
