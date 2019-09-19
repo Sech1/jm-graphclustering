@@ -106,6 +106,8 @@ namespace debugNetData
                     for (int i = 0; i < outData.Count(); i++)
                         sw.WriteLine($"{outData[i].Bacteria} {outData[i].GroupNum}");
                 }
+                Console.WriteLine("Done.");
+                Console.WriteLine($"Output in: {outPath}");
             }
             else
             {

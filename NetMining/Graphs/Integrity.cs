@@ -61,7 +61,7 @@ namespace NetMining.Graphs
                 LightWeightGraph gItter = new LightWeightGraph(g, _removedNodes);
 
                 //get the betweeness
-                Console.WriteLine("Getting betweenness for node " + n);
+                //Console.WriteLine("Getting betweenness for node " + n);
                 double[] betweeness = (threaded) ? BetweenessCentrality.ParallelBrandesBcNodes(gItter) :
                     BetweenessCentrality.BrandesBcNodes(gItter);
                 //get the index of the maximum
